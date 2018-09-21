@@ -11,10 +11,10 @@ tags:
 
 <!-- more -->
 
-### 需求
+## 需求
 - 机器A一直使用账户user1的SSH公钥连接github。现在新建账户user2，希望在机器A也能够以SSH方式连接到github
 
-### 问题
+## 问题
 - 默认情况下，即机器A一直使用账户user1。此时使用命令`$ git remote -v`可以查看当前的远程仓库关联如下：
 ```
 origin  git@github.com:user1Name/repositorie1Name.git (fetch)
@@ -26,7 +26,7 @@ ERROR: Permission to user2Name/repositorie2Name.git denied to user2.
 fatal: Could not read from remote repository.Please make sure you have the correct access rights and the repository exists.
 ```
 
-### 解决方式
+## 解决方式
 - 在user2的项目目录中打开命令行，执行命令：`ssh-keygen -t rsa -C "second@email.com" -f ~/.ssh/id_rsa_for_user2`，生成专属user2的密钥对，再进入user2的github账户将公钥配置完成。
 - 在`~/.ssh/`目录下新建`config`文件，写入以下内容：
 
@@ -58,3 +58,6 @@ Hi user1! You've successfully authenticated, but GitHub does not provide shell a
 ```
 Hi user2! You've successfully authenticated, but GitHub does not provide shell access.
 ```
+
+## 原创性声明
+- **本文为原创，转载请注明作者、出处及链接，谢谢。**
