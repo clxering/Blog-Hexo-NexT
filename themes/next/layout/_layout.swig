@@ -22,7 +22,7 @@
   <div class="{{ container_class }} {% block page_class %}{% endblock %}">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader" style="background: #FAF0E6;">
       <div class="header-inner"> {%- include '_partials/header.swig' %} </div>
     </header>
 

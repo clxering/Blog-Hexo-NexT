@@ -128,7 +128,7 @@ scheme: Muse
 # Value after `||` delimeter is the name of FontAwesome icon. If icon (with or without delimeter) is not specified, globe icon will be loaded.
 social:
   GitHub: https://github.com/clxering || github
-  E-Mail: clxering@gmail.com || envelope
+  E-Mail: MailTo:clxering@gmail.com || envelope
   #Google: https://plus.google.com/yourname || google
   Twitter: https://twitter.com/MrDongch || twitter
   #FB Page: https://www.facebook.com/yourname || facebook
@@ -561,7 +561,7 @@ busuanzi_count:
   site_pv_footer:
   # custom pv span for one page only
   page_pv: true
-  page_pv_header: <i class="fa fa-eye"></i>
+  page_pv_header: <i class="fa fa-eye">  阅读数:</i>
   page_pv_footer:
 
 
