@@ -11,9 +11,9 @@
 
     <div class="custom-logo-site-title">
       <a href="{{ config.root }}"  class="brand" rel="start" style="background:transparent;color:#303030;">
-        <span class="logo-line-before"><i></i></span>
+        <!--<span class="logo-line-before"><i></i></span>-->
         <span class="site-title" style="font-size:28px">{{ config.title }}</span>
-        <span class="logo-line-after"><i></i></span>
+        <!--<span class="logo-line-after"><i></i></span>-->
       </a>
     </div>
       {% if theme.seo %}

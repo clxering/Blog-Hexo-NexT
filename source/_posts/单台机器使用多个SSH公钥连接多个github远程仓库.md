@@ -7,7 +7,7 @@ tags:
 - git
 ---
 
-> 摘要：默认情况下，单台机器只能使用一个与账户对应的SSH密钥连接github，这给多用户连接多账户带来不便
+> 摘要：默认情况下，单台机器只能使用一个与账户对应的SSH密钥连接github，这给多用户连接多账户带来不便。可利用config文件解决这一问题。
 
 <!-- more -->
 
@@ -58,6 +58,3 @@ Hi user1! You've successfully authenticated, but GitHub does not provide shell a
 ```
 Hi user2! You've successfully authenticated, but GitHub does not provide shell access.
 ```
-
-## 原创性声明
-- **本文为原创，转载请注明作者、出处及链接，谢谢。**

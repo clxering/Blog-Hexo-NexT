@@ -7,7 +7,7 @@ tags:
 - git
 ---
 
-> 摘要：使用push提交到远程仓库出现 The requested URL returned error: 403 错误的解决方法。
+> 摘要：记录了使用push提交到远程仓库出现 The requested URL returned error: 403 错误的解决方法。
 
 <!-- more -->
 
@@ -36,6 +36,3 @@ To https://github.com/userName/repositorieName.git
  * [new branch]      master -> master
 Branch 'master' set up to track remote branch 'master' from 'origin'.
 ```
-
-## 原创性声明
-- **本文为原创，转载请注明作者、出处及链接，谢谢。**

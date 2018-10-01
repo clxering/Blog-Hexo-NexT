@@ -9,13 +9,13 @@ tags:
 - CSS
 ---
 
-> 摘要：本文记录了使用Hexo主题NexT搭建个人主页的关键步骤，以供参考、备忘。
+> 摘要：本文记录了使用Hexo主题NexT搭建个人主页的关键步骤，包括部署、修改主题默认样式和事件、域名配置等内容。
 
 <!-- more -->
 
 ## 前言
 
-按照惯例，搭建个人博客或者主页完成后，就将流程记录下来作为第一篇文章。当然，如果只单纯写实现流程，重复叙述这些官方文档里就能知道的内容毫无意义。因此，在实现流程之外，将搭建过程中一些修改主题样式的实践放在文末，仅供参考。
+按照惯例，搭建完成后，将流程记录下来作为开篇文章。
 
 ## 环境
 - git 2.16.1
@@ -31,7 +31,7 @@ tags:
 ## 步骤概览
 
 ### 1、安装git和node.js
-- 安装过程简单，略过。
+- 安装过程简单，略。
 
 ### 2、配置github
 - 在github新建仓库`<githubUserName>.github.io`
@@ -41,38 +41,41 @@ tags:
 	- 如果要在github保存源码，最好是另外开一个仓库，这时就和常规开源项目一样的操作了。
 
 ### 3、建立工作文件夹
-- 名称任意
+- 任意位置，名称不限（遵循合法命名规则为前提）
 
 ### 4、初始化hexo环境
 - 全局安装hexo：`$ npm install -g hexo-cli`
-- 在工作文件夹下右键进入命令行，执行命令：`$ hexo init`。初始化完成后，工作文件夹的结构及**主要**文件（夹）描述如下：
+- 进入命令行，在工作文件夹下执行命令：`$ hexo init`。初始化完成后，工作文件夹的结构及**主要**文件（夹）描述如下：
+
 ```
 .
 ├── _config.yml（站点配置文件）
 ├── package.json（应用程序的信息）
 ├── scaffolds（模版文件夹。新建文章时，Hexo会根据scaffold来建立文件）
 ├── source（资源文件夹）
-|   ├── _drafts（草稿，不一定能看到，后面才配置）
+|   ├── _drafts（草稿，初始化后不一定能看到，需要另行配置）
 |   └── _posts（保存文章）
 └── themes（主题文件夹。Hexo会根据主题来生成静态页面。）
 ├── node_modules
 ├── .gitignore
 ├── package-lock.json
 ```
+
 - 验证默认主题
-	- 工作文件夹下执行启动服务器命令：`$ hexo server`
-	- 访问默认地址`http://localhost:4000/`，此时应该能够看到Hexo的默认主题。
+	- 工作文件夹下执行启动服务器命令：`$ hexo server`（可简写为`$ hexo s`）
+	- 浏览器访问默认地址`http://localhost:4000/`，此时应该能够看到Hexo的默认主题。
 
 ### 5、引入NexT主题
 - 在工作文件夹下右键进入命令行，执行命令：`$ git clone https://github.com/iissnan/hexo-theme-next themes/next`
-- 打开`站点配置文件`，找到`theme` 字段，并将其值更改为next。
+- 打开`站点配置文件`，找到`theme` 字段，并将其值更改为`next`。
 - 验证主题
 	- 工作文件夹下执行启动服务器命令：`$ hexo server`
-	- 访问地址`http://localhost:4000/`，若配置无误，即可看到NexT主题的初始样式。
+	- 浏览器访问默认地址`http://localhost:4000/`，若配置无误，即可看到NexT主题的默认样式。
 
 ### 6、发布
-- 安装git依赖，工作文件夹下执行命令`$ npm install hexo-deployer-git --save`
+- 安装git依赖。工作文件夹下执行命令`$ npm install hexo-deployer-git --save`
 - 编辑`站点配置文件`，修改`# Deployment`条目下的内容：
+
 ```
 # Deployment
 deploy:
@@ -81,8 +84,8 @@ deploy:
   branch: master（分支名称）
 ```
 - 工作文件夹下执行命令`$ hexo clean`，清除缓存文件 (db.json) 和已生成的静态文件 (public)
-- 工作文件夹下执行命令`$ hexo generate`，生成静态文件
-- 工作文件夹下执行命令`$ hexo deploy`，发布到远程仓库
+- 工作文件夹下执行命令`$ hexo generate`（可简写为`$ hexo g`），生成静态文件
+- 工作文件夹下执行命令`$ hexo deploy`（可简写为`$ hexo d`），发布到远程仓库
 
 
 ## 修改默认配置
@@ -93,7 +96,7 @@ deploy:
 # Site
 title: Hexo（网站标题，默认值：Hexo）
 subtitle:（网站副标题）
-description:（网站描述，会显示在侧边栏，若设置作者头像，默认会显示在头像下方）
+description:（网站描述，会显示在侧边栏，若设置博客作者头像，默认会显示在头像下方）
 keywords:
 author: John Doe（作者名字）
 language:（设置语言）
@@ -103,10 +106,11 @@ timezone:
 - author参数用于主题显示文章的作者
 
 ### ⭐语言
-- 编辑`站点配置文件`， 将language设置成所需语言。例如选用简体中文，配置如下：
+- 编辑`站点配置文件`，将language设置成所需语言，详见[NexT主题文档](http://theme-next.iissnan.com/getting-started.html)。例如选用简体中文，配置如下：
 ```
 language: zh-Hans
 ```
+
 ### ⭐导航菜单
 - 导航栏项目均为可选
 - 添加标签页Tags page
@@ -155,7 +159,7 @@ social:
   #Skype: skype:yourname?call|chat || skype
 ```
 
-## 修改默认样式和事件的实践
+## 修改默认样式和事件
 
 ### ⭐修改社交媒体列表的默认位置
 - 社交媒体开启后默认位置显示在侧边栏，现在将其移动到页面底部
@@ -279,5 +283,8 @@ $("#rewardButton").on("click",function(){
   });
 ```
 
-## 原创性声明
-- **本文为原创，转载请注明作者、出处及链接，谢谢。**
+## 域名配置（需购买，可不备案。以阿里云为例）
+- 对`<githubUserName>.github.io`执行ping命令，可查看到IP地址
+- 进入阿里云的域名服务，添加CNAME解析，记录值为`<githubUserName>.github.io`
+- 在工作文件夹的source目录新建CNAME文件，内容为购买的域名
+- 重新生成部署代码到github，此时进入`<githubUserName>.github.io`库，若在Settings中出现`Your site is published at 域名`的提示，说明配置成功
