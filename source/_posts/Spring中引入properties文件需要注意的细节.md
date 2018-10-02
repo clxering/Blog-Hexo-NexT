@@ -15,8 +15,11 @@ tags:
 
 使用`<context:property-placeholder location="classpath:dataSource.properties"/>` 引入properties文件时，无法识别其中的配置信息。
 
-- 注意：该标签在Spring配置文件中是唯一的
-
 ## 问题原因
+`<context:property-placeholder location="classpath:dataSource.properties"/>`中system-properties-mode属性默认取值为"ENVIRONMENT"，即从系统环境中去读取properties文件，找不到文件则报错。
 
-增加属性system-properties-mode="FALLBACK"，即：`<context:property-placeholder location="classpath:dataSource.properties" system-properties-mode="FALLBACK"/>`，要求从本地读取properties。该属性默认取值为"ENVIRONMENT"，从系统环境中去读取，找不到文件时则报错。
+## 解决方案
+增加属性`system-properties-mode="FALLBACK"`，即：`<context:property-placeholder location="classpath:dataSource.properties" system-properties-mode="FALLBACK"/>`，要求从本地读取properties。
+
+## 注意事项
+context标签在Spring配置文件中是唯一的。

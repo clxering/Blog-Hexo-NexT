@@ -1,10 +1,10 @@
 ---
-title: Nginx的结构及配置文件解析
+title: Nginx配置文件的结构详解及案例
 date: 2018-09-23 15:09:08
 categories:
-- 通用技术
+- 后端技术
 tags:
-- nginx
+- Nginx
 ---
 
 > 摘要：记录了Nginx的配置文件结构及具体条目的解析，同时例举了实际配置案例，如：宝塔Linux面板中Nginx 1.8的默认配置、http反向代理配置案例、https反向代理配置案例、负载均衡案例、多个webapp的配置案例、静态站点配置案例、跨域案例。最后，记录了upstream的几种配置方式。

@@ -12,21 +12,26 @@ tags:
 <!-- more -->
 
 ## 需求
-- 机器A一直使用账户user1的SSH公钥连接github。现在新建账户user2，希望在机器A也能够以SSH方式连接到github
+机器A一直使用账户user1的SSH公钥连接github。现在新建账户user2，希望在机器A也能够以SSH方式连接到github
 
-## 问题
-- 默认情况下，即机器A一直使用账户user1。此时使用命令`$ git remote -v`可以查看当前的远程仓库关联如下：
+## 问题描述
+默认情况下，即机器A一直使用账户user1。此时使用命令`$ git remote -v`可以查看当前的远程仓库关联如下：
 ```
 origin  git@github.com:user1Name/repositorie1Name.git (fetch)
 origin  git@github.com:user1Name/repositorie1Name.git (push)
 ```
-- 如果user2新建一个名为repositorie2Name的仓库，此时想在机器A上使用命令`$ git push -u origin master`提交到远程仓库，会出现如下图的错误。原因是机器A当前的公钥是user1的，user2没有权限使用；想在user2的账户中添加user1的公钥？也是不可能的，会提示公钥已经被使用。
+
+如果user2新建一个名为repositorie2Name的仓库，此时想在机器A上使用命令`$ git push -u origin master`提交到远程仓库，会出现如下的错误。
+
 ```
 ERROR: Permission to user2Name/repositorie2Name.git denied to user2.
 fatal: Could not read from remote repository.Please make sure you have the correct access rights and the repository exists.
 ```
 
-## 解决方式
+## 问题原因
+机器A当前的公钥是user1的，user2没有权限使用；想在user2的账户中添加user1的公钥？也是不可能的，会提示公钥已经被使用。
+
+## 解决方案
 - 在user2的项目目录中打开命令行，执行命令：`ssh-keygen -t rsa -C "second@email.com" -f ~/.ssh/id_rsa_for_user2`，生成专属user2的密钥对，再进入user2的github账户将公钥配置完成。
 - 在`~/.ssh/`目录下新建`config`文件，写入以下内容：
 

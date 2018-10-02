@@ -22,7 +22,7 @@ fatal: unable to access 'https://github.com/userName/repositorieName.git/': The 
 ## 问题原因
 问题主要出在原注册账号上，系统保存了账号的信息。在使用新帐号时，信息不一致，所以报错。
 
-## 解决
+## 解决方案
 - 打开cmd，输入命令：`rundll32.exe keymgr.dll,KRShowKeyMgr`，出现存储的用户名和密码窗口
 - 将github相关的条目删除
 - 重新执行命令：`$ git push -u origin master`，提示输入账户名及密码后，成功。
