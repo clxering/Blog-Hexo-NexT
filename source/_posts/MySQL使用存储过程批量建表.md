@@ -1,5 +1,5 @@
 ---
-title: MySQL下使用存储过程批量建表
+title: MySQL使用存储过程批量建表
 date: 2018-10-02 07:29:12
 categories:
 - 后端技术

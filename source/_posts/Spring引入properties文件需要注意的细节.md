@@ -1,5 +1,5 @@
 ---
-title: Spring中引入properties文件需要注意的细节
+title: Spring引入properties文件需要注意的细节
 date: 2018-09-22 09:41:24
 categories:
 - 后端技术

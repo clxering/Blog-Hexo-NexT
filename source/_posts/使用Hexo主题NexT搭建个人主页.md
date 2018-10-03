@@ -4,9 +4,7 @@ date: 2018/9/11 17:15:25
 categories:
 - 前端技术
 tags:
-- JavaScript
-- jQuery
-- CSS
+- 综合
 ---
 
 > 摘要：本文记录了使用Hexo主题NexT搭建个人主页的关键步骤，包括部署、修改主题默认样式和事件、域名配置等内容。

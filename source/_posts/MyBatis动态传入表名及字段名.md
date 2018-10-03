@@ -2,7 +2,9 @@
 title: MyBatis动态传入表名及字段名
 date: 2018-10-02 09:11:31
 categories:
+- 后端技术
 tags:
+- MyBatis
 ---
 
 > 摘要：记录当MyBatis需要动态传入表名及字段名时需要注意的细节和问题。
@@ -11,7 +13,7 @@ tags:
 
 ## 需求
 
-- 原表数据量过大，进行水平分表后，要动态的传入表名执行查询。修改对应的mapper接口及映射文件，增加tableName字段，代码如下：
+原表数据量过大，进行水平分表后，要动态的传入表名执行查询。修改对应的mapper接口及映射文件，增加tableName字段，代码如下：
 
 ```
 List<String> GetFundValueDataLimitByNum
@@ -39,6 +41,6 @@ List<String> GetFundValueDataLimitByNum
 ```
 
 ## 注意事项
-- 为避免sql注入，编写sql语句时应首选采用预编译方式
-- 对语句进行预编译，在执行相同的sql语句时，数据库端可直接从缓冲区获取，提高数据访问的效率
+- 使用非预编译时，传入的数据若为字符串，要添加引号，否则映射文件在形成sql语句时会出现错误
+- 如果使用预编译，传入的数据若为字符串，不能加添加引号，会导致识别错误
 - statementType属性取值有STATEMENT（非预编译），PREPARED（预编译）、CALLABLE，即Statement，PreparedStatement、CallableStatement模式，默认值为PREPARED
