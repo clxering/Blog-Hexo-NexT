@@ -282,7 +282,14 @@ $("#rewardButton").on("click",function(){
 ```
 
 ## 域名配置（需购买，可不备案。以阿里云为例）
-- 对`<githubUserName>.github.io`执行ping命令，可查看到IP地址
-- 进入阿里云的域名服务，添加CNAME解析，记录值为`<githubUserName>.github.io`
-- 在工作文件夹的source目录新建CNAME文件，内容为购买的域名
+- 进入阿里云的域名服务，在`解析设置`添加CNAME解析，将记录值为`<githubUserName>.github.io`，其他设置按需填写即可。
+
+![添加CNAME解析](https://upload-images.jianshu.io/upload_images/5492471-9d3b565d869907d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- 在工作文件夹的source目录下新建CNAME文件（无扩展名），文件内容仅为购买的域名。
+
+![新建CNAME文件](https://upload-images.jianshu.io/upload_images/5492471-4717b575fc8f6eae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 - 重新生成部署代码到github，此时进入`<githubUserName>.github.io`库，若在Settings中出现`Your site is published at 域名`的提示，说明配置成功
+
+![查看Setting](https://upload-images.jianshu.io/upload_images/5492471-631ac9c9a4c80200.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)

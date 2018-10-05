@@ -1,5 +1,5 @@
 ---
-title: 单台机器使用多个SSH公钥连接多个github远程仓库
+title: git使用多个SSH公钥连接多个github远程仓库
 date: 2018-09-12 16:31:37
 categories:
 - 通用技术
