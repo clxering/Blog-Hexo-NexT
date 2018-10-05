@@ -5,7 +5,7 @@
 # Site
 title: MrDcheng's Notebook
 subtitle: 爱技术，爱生活
-description: 记录技术点滴
+description: My blog has technical details about the front-ends and back-ends, as well as daily issues.
 keywords:
 author: MrDcheng
 language: zh-Hans
@@ -13,7 +13,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: http://www.dcheng.site/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
