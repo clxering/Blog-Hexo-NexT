@@ -282,6 +282,26 @@ $("#rewardButton").on("click",function(){
   });
 ```
 
+### ⭐修改主题的文字对齐方式
+- 默认有4个主题：
+```
+# Schemes
+#scheme: Muse
+#scheme: Mist
+scheme: Pisces
+#scheme: Gemini
+```
+- Pisces主题界面比较简练，但是对齐方式为justify（两端对齐），多行内容展示时很不美观；Gemini主题的对齐方式为left（左对齐），但是界面不如前者简练。基于此需求，下面要将Pisces主题的对齐方式修改为left（左对齐）。
+- 在`themes/next/source/css/schemes`下对应各主题的版式，定位：`Pisces/_posts.styl`
+- 将默认齐方式justify修改为left
+```
+.post-body {
+  +mobile() {
+    text-align: left;
+  }
+}
+```
+
 ## 域名配置（需购买，可不备案。以阿里云为例）
 - 进入阿里云的域名服务，在`解析设置`添加CNAME解析，将记录值为`<githubUserName>.github.io`，其他设置按需填写即可。
 

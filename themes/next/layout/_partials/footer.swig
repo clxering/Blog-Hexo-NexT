@@ -9,12 +9,12 @@
   
 <div class="author" itemprop="copyrightHolder">
 	{% if theme.social %}
-            <div class="links-of-author" style="margin:0">
+			<div class="links-of-author" style="margin:0">
                 {% for name, link in theme.social %}
-                  <span class="links-of-author-item">
-                    <a href="{{ link.split('||')[0] | trim }}" target="_blank" title="{{ name }}" style="border-bottom:none;font-size: 18px">
+                  <span class="links-of-author-item" style="width:100px">
+                    <a href="{{ link.split('||')[0] | trim }}" target="_blank" title="GitHub" style="border-bottom:none;font-size: 18px">
                       {% if theme.social_icons.enable %}
-                        <i class="fa fa-fw fa-{{ link.split('||')[1] | trim }}"></i>{#
+                        <i class="fa fa-fw fa-{{ link.split('||')[1] | trim }}" style="font-size: 20px;"></i>{#
                     #}{% endif %}{#
                       #}{% if not theme.social_icons.icons_only %}{#
                         #}{{ name }}{#
