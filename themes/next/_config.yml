@@ -243,9 +243,9 @@ post_wordcount:
   #description: ex. subscribe to my blog by scanning my public wechat account
 
 # Reward
-reward_comment: 提供小额赞助，鼓励作者写出更好的原创文章
-wechatpay: /images/wechatpay.png
-alipay: /images/alipay.png
+#reward_comment: 提供小额赞助，鼓励作者写出更好的原创文章
+#wechatpay: /images/wechatpay.png
+#alipay: /images/alipay.png
 #bitcoin: /images/bitcoin.png
 
 # Declare license on posts

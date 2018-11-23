@@ -31,6 +31,8 @@
       <header class="post-header">
 
         {# Not to show title for quote posts that do not have a title #}
+		{##############################显示文章标题（开始）##############################}
+		{% if not is_index %}
         {% if not (is_index and post.type === 'quote' and not post.title) %}
           <{% if theme.seo %}h2{% else %}h1{% endif %} class="post-title{% if post.direction && post.direction.toLowerCase() === 'rtl' %} rtl{% endif %}" itemprop="name headline">{#
           #}{# Link posts #}{#
@@ -59,7 +61,44 @@
           #}{% endif %}{#
         #}</{% if theme.seo %}h2{% else %}h1{% endif %}>
         {% endif %}
+		{% endif %}
+		{##############################显示文章标题（结束）##############################}
+		
+		{##############################额外显示文章标题（开始）##############################}
+		{% if is_index %}
+        {% if not (is_index and post.type === 'quote' and not post.title) %}
+          <{% if theme.seo %}h2{% else %}h1{% endif %} class="post-title{% if post.direction && post.direction.toLowerCase() === 'rtl' %} rtl{% endif %}" itemprop="name headline" style="text-align: left;">{#
+          #}{# Link posts #}{#
+          #}{% if post.link %}
+              {% if post.sticky > 0 %}
+                {{ post.sticky }}
+                <span class="post-sticky-flag" title="{{ __('post.sticky') }}">
+                  <i class="fa fa-thumb-tack"></i>
+                </span>
+              {% endif %}
+              <a class="post-title-link post-title-link-external" target="_blank" href="{{ url_for(post.link) }}" itemprop="url" style="color: #4183c4;">
+                {{ post.title or post.link }}
+                <i class="fa fa-external-link"></i>
+              </a>
+            {% else %}{#
+            #}{% if is_index %}
+                {% if post.sticky > 0 %}
+                  <span class="post-sticky-flag" title="{{ __('post.sticky') }}">
+                    <i class="fa fa-thumb-tack"></i>
+                  </span>
+                {% endif %}
+                <a class="post-title-link" href="{{ url_for(post.path) }}" itemprop="url" style="color: #4183c4;">{#
+                #}{{ post.title | default(__('post.untitled'))}}{#
+              #}</a>{#
+            #}{% else %}{{ post.title }}{% endif %}{#
+          #}{% endif %}{#
+        #}</{% if theme.seo %}h2{% else %}h1{% endif %}>
+        {% endif %}
+		{% endif %}
+		{##############################额外显示文章标题（结束）##############################}
 
+		{##############################显示日期、分类等文章信息（开始）##############################}
+		{% if not is_index %}
         <div class="post-meta">
           <span class="post-time">
             {% if theme.post_meta.created_at %}
@@ -262,6 +301,9 @@
           {% endif %}
 
         </div>
+		{% endif %}
+		{##############################显示日期、分类等文章信息（结束）##############################}
+		
       </header>
     {% endif %}
 
@@ -289,35 +331,42 @@
         </div>
       {% endif %}
 
+	  {##############################显示Read More按钮（开始）##############################}
       {% if is_index %}
         {% if post.description and theme.excerpt_description %}
           {{ post.description }}
           <!--noindex-->
+		  <!--
           <div class="post-button text-center">
             <a class="btn" href="{{ url_for(post.path) }}">
               {{ __('post.read_more') }} &raquo;
             </a>
           </div>
+		  -->
           <!--/noindex-->
         {% elif post.excerpt  %}
           {{ post.excerpt }}
           <!--noindex-->
+		  <!--
           <div class="post-button text-center">
             <a class="btn" href="{{ url_for(post.path) }}{% if theme.scroll_to_more %}#{{ __('post.more') }}{% endif %}" rel="contents">
               {{ __('post.read_more') }} &raquo;
             </a>
           </div>
+		  -->
           <!--/noindex-->
         {% elif theme.auto_excerpt.enable %}
           {% set content = post.content | striptags %}
           {{ content.substring(0, theme.auto_excerpt.length) }}
           {% if content.length > theme.auto_excerpt.length %}...{% endif %}
           <!--noindex-->
+		  <!--
           <div class="post-button text-center">
             <a class="btn" href="{{ url_for(post.path) }}{% if theme.scroll_to_more %}#{{ __('post.more') }}{% endif %}" rel="contents">
               {{ __('post.read_more') }} &raquo;
             </a>
           </div>
+		  -->
           <!--/noindex-->
         {% else %}
           {% if post.type === 'picture' %}
@@ -327,9 +376,221 @@
           {% endif %}
         {% endif %}
       {% else %}
+		{#若进入正文则不显示Read More按钮，显示正文内容#}
         {{ post.content }}
       {% endif  %}
+	  {##############################显示Read More按钮（结束）##############################}
     </div>
+	
+	{##############################额外显示的示日期、分类等文章信息（开始）##############################}
+	{% if is_index %}
+		{% if not headlessPost %}
+	<div class="post-meta" style="text-align: left;margin: 3px 0 20px 0;">
+          <span class="post-time">
+            {% if theme.post_meta.created_at %}
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              {% if theme.post_meta.item_text %}
+                <span class="post-meta-item-text">{{ __('post.posted') }}</span>
+              {% endif %}
+              <time title="{{ __('post.created') }}" itemprop="dateCreated datePublished" datetime="{{ moment(post.date).format() }}">
+                {{ date(post.date, config.date_format) }}
+              </time>
+            {% endif %}
+
+            {% if theme.post_meta.created_at and theme.post_meta.updated_at %}
+              <span class="post-meta-divider">|</span>
+            {% endif %}
+
+            {% if theme.post_meta.updated_at %}
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              {% if theme.post_meta.item_text %}
+                <span class="post-meta-item-text">{{ __('post.modified') }}&#58;</span>
+              {% endif %}
+              <time title="{{ __('post.modified') }}" itemprop="dateModified" datetime="{{ moment(post.updated).format() }}">
+                {{ date(post.updated, config.date_format) }}
+              </time>
+            {% endif %}
+          </span>
+
+          {% if post.categories and post.categories.length and theme.post_meta.categories %}
+            <span class="post-category" >
+            {% if theme.post_meta.created_at or theme.post_meta.updated_at %}
+              <span class="post-meta-divider">|</span>
+            {% endif %}
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              {% if theme.post_meta.item_text %}
+                <span class="post-meta-item-text">{{ __('post.in') }}</span>
+              {% endif %}
+              {% for cat in post.categories %}
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="{{ url_for(cat.path) }}" itemprop="url" rel="index">
+                    <span itemprop="name">{{ cat.name }}</span>
+                  </a>
+                </span>
+
+                {% set cat_length = post.categories.length %}
+                {% if cat_length > 1 and loop.index !== cat_length %}
+                  {{ __('symbol.comma') }}
+                {% endif %}
+              {% endfor %}
+            </span>
+          {% endif %}
+
+          {% if post.comments %}
+            {% if (theme.duoshuo and theme.duoshuo.shortname) or theme.duoshuo_shortname %}
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="{{ post.path }}" itemprop="commentCount"></span>
+                </a>
+              </span>
+            {% elseif theme.facebook_comments_plugin.enable %}
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count fb-comments-count" data-href="{{ post.permalink }}" itemprop="commentCount">0</span> comments
+                </a>
+              </span>
+            {% elseif theme.disqus.enable and theme.disqus.count %}
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="{{ post.path }}" itemprop="commentCount"></span>
+                </a>
+              </span>
+            {% elseif theme.hypercomments_id %}
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="{{ post.path }}" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            {% elseif theme.changyan.enable and theme.changyan.appid and theme.changyan.appkey %}
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              {% if is_post() %}
+                <a href="{{ url_for(post.path) }}#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="{{ post.path }}" itemprop="commentsCount"></span>
+                </a>
+              {% else %}
+                <a href="{{ url_for(post.path) }}#SOHUCS" itemprop="discussionUrl">
+                  <span id="url::{{ post.permalink }}" class="cy_cmt_count" data-xid="{{ post.path }}" itemprop="commentsCount" ></span>
+                </a>
+              {% endif %}
+            {% elseif is_post() and theme.gitment.enable and theme.gitment.mint and theme.gitment.count %}
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="{{ url_for(post.path) }}" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            {% elseif theme.valine.enable and theme.valine.appid and theme.valine.appkey %}
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="{{ url_for(post.path) }}" itemprop="commentCount"></span>
+                </a>
+              </span>
+            {% endif %}
+          {% endif %}
+
+          {# LeanCould PageView #}
+          {% if theme.leancloud_visitors.enable %}
+             <span id="{{ url_for(post.path) }}" class="leancloud_visitors" data-flag-title="{{ post.title }}">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               {% if theme.post_meta.item_text %}
+                 <span class="post-meta-item-text">{{__('post.visitors')}}&#58;</span>
+               {% endif %}
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          {% endif %}
+
+          {% if not is_index and theme.busuanzi_count.enable and theme.busuanzi_count.page_pv %}
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">{{ theme.busuanzi_count.page_pv_header }}
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>{{ theme.busuanzi_count.page_pv_footer }}
+            </span>
+          {% endif %}
+
+          {% if theme.post_wordcount.wordcount or theme.post_wordcount.min2read %}
+            <div class="post-wordcount">
+              {% if theme.post_wordcount.wordcount %}
+                {% if not theme.post_wordcount.separated_meta %}
+                  <span class="post-meta-divider">|</span>
+                {% endif %}
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                {% if theme.post_wordcount.item_text %}
+                  <span class="post-meta-item-text">{{ __('post.wordcount') }}&#58;</span>
+                {% endif %}
+                <span title="{{ __('post.wordcount') }}">
+                  {{ wordcount(post.content) }}
+                </span>
+              {% endif %}
+
+              {% if theme.post_wordcount.wordcount and theme.post_wordcount.min2read %}
+                <span class="post-meta-divider">|</span>
+              {% endif %}
+
+              {% if theme.post_wordcount.min2read %}
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                {% if theme.post_wordcount.item_text %}
+                  <span class="post-meta-item-text">{{ __('post.min2read') }} &asymp;</span>
+                {% endif %}
+                <span title="{{ __('post.min2read') }}">
+                  {{ min2read(post.content) }}
+                </span>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          {% if post.description and (not theme.excerpt_description or not is_index) %}
+              <div class="post-description">
+                  {{ post.description }}
+              </div>
+          {% endif %}
+
+        </div>
+		{% endif  %}
+	{% endif  %}
+	{##############################额外显示的示日期、分类等文章信息（结束）##############################}
+	
     {#####################}
     {### END POST BODY ###}
     {#####################}
@@ -400,6 +661,7 @@
       {% endif %}
       {% endif %}
 
+	  <!--
       {% if not is_index and (post.prev or post.next) %}
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
@@ -421,10 +683,11 @@
           </div>
         </div>
       {% endif %}
+	  -->
 
       {% set isLast = loop.index % page.per_page === 0 %}
       {% if is_index and not isLast %}
-        <div class="post-eof"></div>
+        <div class="post-eof" style="margin: 10px auto 30px;width: 100%;background: #eee;"></div>
       {% endif %}
     </footer>
   </div>
