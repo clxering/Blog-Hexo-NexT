@@ -81,6 +81,7 @@
               </div>
             {% endif %}
 
+			<a href="https://info.flagcounter.com/F2OV"><img src="https://s05.flagcounter.com/countxl/F2OV/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_30/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0" style="margin-top:30px"></a>
           </nav>
 
           {% if theme.rss %}
