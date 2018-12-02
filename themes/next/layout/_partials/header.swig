@@ -1,5 +1,5 @@
 <div class="site-brand-wrapper">
-  <div class="site-meta {% if theme.custom_logo.enabled %}custom-logo{% endif %}">
+  <div class="site-meta {% if theme.custom_logo.enabled %}custom-logo{% endif %}" style="background-image: linear-gradient(45deg, rgb(2, 0, 49) 0px, rgb(109, 51, 83) 70%);background-size: initial;background-position-x: initial;">
     {% if theme.custom_logo.image and theme.scheme === 'Muse' %}
       <div class="site-meta-headline">
         <a>
