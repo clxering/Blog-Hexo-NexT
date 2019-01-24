@@ -99,9 +99,9 @@ $ git log
 ```
 
 ### `--pretty=oneline` 参数
-仅显示提交的历史版本号，只能显示head指向的当前版本和之前的版本信息
+仅显示提交的最近3条历史版本号，只能显示 head 指向的当前版本和之前的版本信息
 ```
-$ git log --pretty=oneline
+$ git log --pretty=oneline -3
 ```
 
 ## ⭐查看操作命令历史记录
@@ -347,3 +347,21 @@ git clean 参数 
 - -x 删除忽略文件已经对git来说不识别的文件
 - -d 删除未被添加到git的路径中的文件
 - -f 强制运行
+
+## ⭐对比两个分支差异
+有 2 个分支：master、dev。
+### 查看 dev 有，而 master 中没有的：
+```
+git log dev ^master
+```
+### 查看 dev 中比 master 中多提交了哪些内容：
+```
+git log master..dev
+```
+### 只比较两个分支有什么不一样：
+```
+git log dev...master
+```
+在上述情况下，再显示出每个提交是在哪个分支上：
+`git log --left-right dev...master`
+根据 `–left-right dev…master` 的顺序，左箭头 < 表示是 dev 分支提交；右箭头 > 表示 master 分支提交
