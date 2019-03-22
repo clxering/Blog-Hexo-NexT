@@ -1,5 +1,5 @@
 ---
-title: MySQL使用存储过程批量建表
+title: MySQL 使用存储过程批量建表
 date: 2018-10-02 07:29:12
 categories:
 - 后端技术
@@ -13,10 +13,11 @@ tags:
 
 ## 需求
 
-建立fundvaluedata_0开始，到fundvaluedata_9共10张表，各表的字段结构、数据引擎、编码方式等均相同。
+建立 fundvaluedata_0 开始，到 fundvaluedata_9 共 10 张表，各表的字段结构、数据引擎、编码方式等均相同。
 
 ## 解决方案
 使用如下存储过程：
+
 ```
 DELIMITER //
 CREATE PROCEDURE create_table()
@@ -60,4 +61,4 @@ DELIMITER ;
 ```
 
 ## 注意事项
-创建存储过程时，若采用命令行的方式，要先修改默认命令结束符，这样将CREATE到END之间的代码当是一条语句来执行。例如上述代码中的`DELIMITER //`，将命令结束符修改为`//`，执行结束后再修改回`;`。
+创建存储过程时，若采用命令行的方式，要先修改默认命令结束符，这样将 CREATE 到 END 之间的代码当是一条语句来执行。例如上述代码中的 `DELIMITER //`，将命令结束符修改为 `//`，执行结束后再修改回 `;`。

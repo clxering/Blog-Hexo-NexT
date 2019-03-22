@@ -1,5 +1,5 @@
 ---
-title: GitHub中使用 issues 模版和 pull request 模版
+title: GitHub 中使用 issues 模版和 pull request 模版
 date: 2018-12-01 22:35:33
 categories:
 - 通用技术

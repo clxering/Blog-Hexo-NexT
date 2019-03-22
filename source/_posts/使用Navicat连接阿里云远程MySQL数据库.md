@@ -1,5 +1,5 @@
 ---
-title: 使用Navicat连接阿里云远程MySQL数据库
+title: 使用 Navicat 连接阿里云远程 MySQL 数据库
 date: 2018-05-10 21:57:06
 categories:
 - 后端技术
@@ -13,13 +13,13 @@ tags:
 
 ## 需求
 
-使用Navicat连接阿里云远程MySQL数据库。
+使用 Navicat 连接阿里云远程 MySQL 数据库。
 
 ## 解决方案
 
 ### 1、开放权限
 
-登录MySql，此时用命令指定用户名“root”可以通过密码“123456”访问所有数据库，之后刷新权限。相应的命令及结果如下：
+登录 MySql，此时用命令指定用户名 root 可以通过密码 123456 访问所有数据库，之后刷新权限。相应的命令及结果如下：
 
 ```
 mysql>GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;  
@@ -42,6 +42,6 @@ Query OK, 0 rows affected (0.00 sec)
 
 ### 3、设置Navicat
 
-进入Navicat，新建连接，在“常规”选项卡中输入开放权限时的信息，用户名：root；密码：123456
+进入 Navicat，新建连接，在「常规」选项卡中输入开放权限时的信息，用户名：root；密码：123456
 
 ![设置Navicat](https://upload-images.jianshu.io/upload_images/5492471-79f66eabf26b49dd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
