@@ -1,0 +1,126 @@
+---
+title: Java 日期类型（Date、LocalDateTime、LocalDate、LocalTime）之间的转换
+date: 2019-03-23 10:33:00
+categories:
+tags:
+---
+
+> 摘要：记录了 Java 8 日期类型（Date、LocalDateTime、LocalDate、LocalTime）之间的转换
+
+<!-- more -->
+
+## 需求
+使用 TimerTask 实现定时循环执行某动作，指定起始时间点和频率。使用如下代码：
+
+```
+public static void timerTask() {
+    new Timer().schedule(new TimerTask() {
+        @Override
+        public void run() {
+            ……
+        }
+    }, new Date(), 1000);
+}
+```
+
+## 问题描述
+由于 schedule 用于指定起始时间点的构造仅支持传入 Date 类型，而 Date 类除了默认构造之外，其他能够指定时间点的构造已经标注 `@Deprecated`
+
+```
+public void schedule(TimerTask task, Date firstTime, long period) {
+    if (period <= 0)
+        throw new IllegalArgumentException("Non-positive period.");
+    sched(task, firstTime.getTime(), -period);
+}
+```
+
+```
+@Deprecated
+public Date(int year, int month, int date) {
+    this(year, month, date, 0, 0, 0);
+}
+
+@Deprecated
+public Date(int year, int month, int date, int hrs, int min) {
+    this(year, month, date, hrs, min, 0);
+}
+
+@Deprecated
+public Date(int year, int month, int date, int hrs, int min, int sec) {
+    int y = year + 1900;
+    // month is 0-based. So we have to normalize month to support Long.MAX_VALUE.
+    if (month >= 12) {
+        y += month / 12;
+        month %= 12;
+    } else if (month < 0) {
+        y += CalendarUtils.floorDivide(month, 12);
+        month = CalendarUtils.mod(month, 12);
+    }
+    BaseCalendar cal = getCalendarSystem(y);
+    cdate = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.getDefaultRef());
+    cdate.setNormalizedDate(y, month + 1, date).setTimeOfDay(hrs, min, sec, 0);
+    getTimeImpl();
+    cdate = null;
+}
+
+@Deprecated
+public Date(String s) {
+    this(parse(s));
+}
+```
+
+## 解决方案
+使用 LocalDateTime 结合 Instant 设定时间点后，转为 Date 类型：
+
+```
+//Sat Mar 23 09:57:43 CST 2019
+LocalDateTime localDateTime = LocalDateTime.of(2019, 3, 23, 10, 18, 0);
+ZoneId zone = ZoneId.systemDefault();
+Instant instant = localDateTime.atZone(zone).toInstant();
+Date date = Date.from(instant);
+```
+
+## 其他
+### LocalDate 转为 Date
+```
+LocalDate localDate = LocalDate.now();
+ZoneId zone = ZoneId.systemDefault();
+Instant instant = localDate.atStartOfDay().atZone(zone).toInstant();
+Date date = Date.from(instant);
+```
+
+### LocalTime 转为 Date
+```
+LocalTime localTime = LocalTime.now();
+LocalDate localDate = LocalDate.now();
+LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+ZoneId zone = ZoneId.systemDefault();
+Instant instant = localDateTime.atZone(zone).toInstant();
+Date date = Date.from(instant);
+```
+
+### Date 转为 LocalDateTime
+```
+Date date = new Date();
+Instant instant = date.toInstant();
+ZoneId zone = ZoneId.systemDefault();
+LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+```
+
+### Date 转为 LocalDate
+```
+Date date = new Date();
+Instant instant = date.toInstant();
+ZoneId zone = ZoneId.systemDefault();
+LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+LocalDate localDate = localDateTime.toLocalDate();
+```
+
+### Date 转为 LocalTime
+```
+Date date = new Date();
+Instant instant = date.toInstant();
+ZoneId zone = ZoneId.systemDefault();
+LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+LocalTime localTime = localDateTime.toLocalTime();
+```
