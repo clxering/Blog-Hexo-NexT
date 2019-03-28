@@ -35,9 +35,9 @@ public static void main(String[] args) throws Exception {
         // 获取邮件对象
         Message message = new MimeMessage(session);
         // 设置发件人邮箱地址
-        message.setFrom(new InternetAddress("1079368866@qq.com"));
+        message.setFrom(new InternetAddress("xxxx@qq.com"));
         // 设置收件人邮箱地址
-        message.setRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress("573690535@qq.com")});
+        message.setRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress("xxxx@qq.com")});
         // 设置邮件标题
         message.setSubject("title");
         // 设置邮件内容

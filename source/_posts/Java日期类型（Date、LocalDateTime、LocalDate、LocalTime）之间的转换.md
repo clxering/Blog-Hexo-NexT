@@ -2,10 +2,12 @@
 title: Java 日期类型（Date、LocalDateTime、LocalDate、LocalTime）之间的转换
 date: 2019-03-23 10:33:00
 categories:
+- 后端技术
 tags:
+- 综合
 ---
 
-> 摘要：记录了 Java 8 日期类型（Date、LocalDateTime、LocalDate、LocalTime）之间的转换
+> 摘要：记录了 Java 日期类型（Date、LocalDateTime、LocalDate、LocalTime）之间的转换方式
 
 <!-- more -->
 
@@ -23,8 +25,18 @@ public static void timerTask() {
 }
 ```
 
+注：若缺省 period 频率参数，如果date日期在今天之前，则启动定时器后，立即运行一次定时任务run方法；如果date日期在今天之后，则启动定时器后，会在指定的将来日期运行一次任务run方法。
+若缺省 date 日期参数，指定启动定时器5s之后运行定时器任务run方法，并且只运行一次
+
+date, 2000);
+        /*如果指定的date时间是当天或者今天之前，启动定时器后会立即每隔2s运行一次定时器任务*/
+        /*如果指定的date时间是未来的某天，启动定时器后会在未来的那天开始，每隔2s执行一次定时器任务*/
+
+        5000, 2000);
+        /*当启动定时器后，5s之后开始每隔2s执行一次定时器任务*/
+
 ## 问题描述
-由于 schedule 用于指定起始时间点的构造仅支持传入 Date 类型，而 Date 类除了默认构造之外，其他能够指定时间点的构造已经标注 `@Deprecated`
+由于 schedule 用于指定起始时间点的构造仅支持传入 Date 类型，而 Date 类能够指定年、月、日、时、分、秒的构造已经标注 `@Deprecated`
 
 ```
 public void schedule(TimerTask task, Date firstTime, long period) {
@@ -61,11 +73,6 @@ public Date(int year, int month, int date, int hrs, int min, int sec) {
     cdate.setNormalizedDate(y, month + 1, date).setTimeOfDay(hrs, min, sec, 0);
     getTimeImpl();
     cdate = null;
-}
-
-@Deprecated
-public Date(String s) {
-    this(parse(s));
 }
 ```
 
