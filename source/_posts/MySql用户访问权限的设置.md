@@ -1,5 +1,5 @@
 ---
-title: MySql 用户访问权限的设置
+title: MySQL 用户访问权限的设置
 date: 2018-10-05 18:10:06
 categories:
 - 后端技术
@@ -7,7 +7,7 @@ tags:
 - MySQL
 ---
 
-> 摘要：记录了MySql用户访问权限的设置方式。
+> 摘要：记录了 MySql 用户访问权限的设置方式。
 
 <!-- more -->
 

@@ -1,5 +1,5 @@
 ---
-title: Spring 问题记录备忘
+title: Spring 系列出现的问题及解决方案记录备忘
 date: 2019-03-28 20:30:52
 categories:
 - 后端技术
@@ -11,18 +11,17 @@ tags:
 
 <!-- more -->
 
-## 一、Spring 通用
-### 1、注解 @Resource 和 @Autowired 区别对比
+## 一、Spring 系列通用记录
+### ⭐ 注解 `@Resource` 和 `@Autowired` 区别对比
 
-@Resource 和 @Autowired 可在 bean 注入时使用。@Resource 并不是 Spring 的注解，它的包是 javax.annotation.Resource，需要导入，但是 Spring 支持该注解的注入。
+`@Resource` 和 `@Autowired` 可在 bean 注入时使用。`@Resource` 并不是 Spring 的注解，它的包是 `javax.annotation.Resource`，需要导入，但是 Spring 支持该注解的注入。
 
-#### 1.1 共同点
-
+#### 共同点
 两者都可以写在字段和 setter 方法上。两者如果都写在字段上，那么就不需要再写 setter 方法。
 
-#### 1.2 不同点
-- @Autowired 是 Spring 提供的注解，需要导入包 org.springframework.beans.factory.annotation.Autowired;
-默认按照类型注入。
+#### 不同点
+- `@Autowired` 是 Spring 提供的注解，需要导入包 `org.springframework.beans.factory.annotation.Autowired`，默认按照类型注入。
+
 ```
 public class TestServiceImpl {
     // 下面两种@Autowired只要使用一种即可
@@ -35,7 +34,9 @@ public class TestServiceImpl {
     }
 }
 ```
-- @Autowired注解是按照类型装配依赖对象，默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。如下：
+
+- @Autowired 注解是按照类型装配依赖对象，默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。如下：
+
 ```
 public class TestServiceImpl {
     @Autowired
@@ -43,7 +44,9 @@ public class TestServiceImpl {
     private UserDao userDao;
 }
 ```
-- @Resource默认按照ByName自动注入，由J2EE提供，需要导入包javax.annotation.Resource。@Resource有两个重要的属性：name和type，而Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。所以，如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
+
+- @Resource 默认按照 ByName 自动注入，由 J2EE 提供，需要导入包 javax.annotation.Resource。@Resource 有两个重要的属性：name 和 type，而 Spring 将 @Resource 注解的 name 属性解析为 bean 的名字，而 type 属性则解析为 bean 的类型。所以，如果使用 name 属性，则使用 byName 的自动注入策略，而使用 type 属性时则使用 byType 自动注入策略。如果既不制定 name 也不制定 type 属性，这时将通过反射机制使用 byName 自动注入策略。
+
 ```
 public class TestServiceImpl {
     // 下面两种@Resource只要使用一种即可
@@ -56,18 +59,19 @@ public class TestServiceImpl {
     }
 }
 ```
-注：最好是将@Resource放在setter方法上，因为这样更符合面向对象的思想，通过set、get去操作属性，而不是直接去操作属性。
 
-#### 1.3 @Resource装配顺序
+注：最好是将 @Resource 放在 setter 方法上，因为这样更符合面向对象的思想，通过 set、get 去操作属性，而不是直接去操作属性。
+
+#### 1.3 @Resource 装配顺序
 - 如果同时指定了 name 和 type，则从 Spring 上下文中找到唯一匹配的 bean 进行装配，找不到则抛出异常。
 - 如果指定了 name，则从上下文中查找名称（id）匹配的 bean 进行装配，找不到则抛出异常。
 - 如果指定了 type，则从上下文中找到类似匹配的唯一 bean 进行装配，找不到或是找到多个，都会抛出异常。
 - 如果既没有指定 name，又没有指定 type，则自动按照 byName 方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配。
 - Resource 的作用相当于 @Autowired，只不过 @Autowired 按照 byType 自动注入。
 
-### 2、@Autowired 注解的工作流程
-
-（1）例子，定义了一个 BaseRepository  接口，其中定义了一个 printMyName 方法:
+### ⭐ @Autowired 注解的工作流程
+#### 案例
+定义了一个 BaseRepository  接口，其中定义了一个 printMyName 方法:
 ```
 package defaultPackage.AutowiredTest;
 
@@ -112,10 +116,10 @@ public class UserService {
     }
 }
 ```
-执行后输出"My name is FirstRepositoryImp"
+执行后输出 `My name is FirstRepositoryImp`
 
 （4）以上代码的工作流程
-在启动 Spring IoC 时，容器自动装载了一个 AutowiredAnnotationBeanPostProcessor 后置处理器，当容器扫描到 @Autowied、@Resource 或 @Inject 时，就会在 IoC 容器自动查找需要的 bean 并装配。
+在启动 Spring IoC 时，容器自动装载了一个 `AutowiredAnnotationBeanPostProcessor` 后置处理器，当容器扫描到 `@Autowied`、`@Resource` 或 `@Inject` 时，就会在 IoC 容器自动查找需要的 bean 并装配。
 
 此时，再定义一个 SecondRepositoryImp 类来实现 BaseRepository 接口
 
@@ -133,7 +137,7 @@ public class SecondRepositoryImp implements BaseRepository {
 }
 ```
 
-此时无法编译，报错“Could not autowire. There is more than one bean of 'BaseRepository' type.”因为在容器中有两个 BaseRepository 类型的实例，一个名称为 firstRepositoryImp，另一个为 secondRepositoryImp。
+此时无法编译，报错 `Could not autowire. There is more than one bean of 'BaseRepository' type.` 因为在容器中有两个 BaseRepository 类型的实例，一个名称为 firstRepositoryImp，另一个为 secondRepositoryImp。
 
 这里由于查询到有两个该类型的实例，那么应改用名称匹配方式，在容器中查找名称为 secondRepositoryImp 的实例，并自动装配。
 
@@ -143,17 +147,19 @@ private BaseRepository secondRepositoryImp;
 ```
 
 但是修改名称的方式并不推荐，应使用 @Qualifier 注解，显式指定需要装配 bean 的名称，用法如下：
+
 ```
 @Autowired
 @Qualifier("secondRepositoryImp ")
 private BaseRepository baseRepository;
 ```
-输出结果"My name is SecondRepositoryImp"
+
+输出结果 `My name is SecondRepositoryImp`
 
 （5）注意事项
-- 在使用@Autowired时，首先在容器中查询对应类型的bean
-- 如果查询结果刚好为一个，就将该bean装配给@Autowired指定的数据
-- 如果查询的结果不止一个，那么@Autowired会根据名称来查找。
+- 在使用 @Autowired 时，首先在容器中查询对应类型的 bean
+- 如果查询结果刚好为一个，就将该 bean 装配给 @Autowired 指定的数据
+- 如果查询的结果不止一个，那么 @Autowired 会根据名称来查找。
 - 如果查询的结果为空，那么会抛出异常。解决方法时，使用 required=false
 
 ## 二、异常及报错的解决方案汇总
@@ -252,4 +258,8 @@ Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get 
 
 或者还有另一种选择：jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8，这个是解决中文乱码输入问题，当然也可以和上面的一起结合：jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
 
-### ⭐
+### ⭐Spring 引入 properties 文件无法识别配置信息
+1. 问题描述：使用 `<context:property-placeholder location="classpath:dataSource.properties"/>` 引入 properties 文件时，无法识别其中的配置信息。
+2. 问题原因：`<context:property-placeholder location="classpath:dataSource.properties"/>` 中 system-properties-mode 属性默认取值为 "ENVIRONMENT"，即从系统环境中去读取 properties 文件，找不到文件则报错。
+3. 解决方案：增加属性 `system-properties-mode="FALLBACK"`，即：`<context:property-placeholder location="classpath:dataSource.properties" system-properties-mode="FALLBACK"/>`，要求从本地读取 properties。
+4. 注意事项：context 标签在 Spring 配置文件中是唯一的。

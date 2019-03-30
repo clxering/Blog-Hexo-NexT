@@ -1,5 +1,5 @@
 ---
-title: MySQL问题记录备忘
+title: MySQL 问题记录备忘
 date: 2019-03-28 20:59:37
 categories:
 - 后端技术
@@ -7,20 +7,16 @@ tags:
 - MySQL
 ---
 
-> 摘要：
+> 摘要：记录了 MySQL 使用过程中出现的问题及解决方案。
 
 <!-- more -->
 
-
-## 一、压缩版安装（8.0+ 版本）
-1、下载，解压至目标位置
-
-2、配置环境变量
-
-3、初始化
-进入 bin 目录，用管理员权限打开 cmd 命令行，执行 `mysqld --initialize --console`，出现的随机密码 `,sDmQfi:f9u#`。
-
-**注意：这个版本没有my.ini文件，因此我们无法通过在my.ini文件中更改配置跳过输入密码，因此我们需要通过–console命令来获取root的密码**
+## 一、压缩版安装（8.0.15 版本）
+1. 下载，解压至目标位置
+2. 配置环境变量
+3. 初始化
+进入 bin 目录，用管理员权限打开 cmd 命令行，执行 `mysqld --initialize --console`，出现的随机密码 `,sDmQfi:f9u#`。如下所示：
+> **注意：8.0.15 版本没有 my.ini 文件，因此无法通过在 my.ini 文件中更改配置跳过输入密码，需要通过 –console 命令来获取 root 的密码**
 
 ```
 D:\mysql8.0.15\bin>mysqld --initialize --console
@@ -36,15 +32,12 @@ D:\mysql8.0.15\bin>mysqld --initialize --console
 6、修改密码
 命令：`alter user 'root'@'localhost' Identified by '新密码';`
 
-
 ## 二、异常及报错的解决方案汇总
 ### ⭐ 数据库可视化客户端连接 MySQL 时出现 2058 错误
-解决方法，修改加密方式。windows 下 cmd 登录 mysql 数据库，然后执行这条SQL：
+8.0 采用了caching_sha2_password 加密，是 sha256 的改进版加密方式，多数第三方客户端都不支持这种加密方式，自带的命令行可支持。具体可参看 [官方文档](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password) 有关该内容说明。 要解决该问题，需要修改加密方式。以 windows 系统为例：用管理员身份开启 cmd，登录 mysql 数据库后执行下列命令：
 
-`ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';`
+> 这里以 root 用户为例，如果要配置其他用户或授权 IP，对应修改名称和地址即可。password 是要设置的密码。
 
-password 是你自己设置的 root 密码；
-
-8.0 采用了caching_sha2_password 加密方式，是 sha256 方式的改进，第三方客户端基本都不支持这种加密方式，但自带的命令行支持。
-
-具体可参看官方文档说明：https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+```
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+```
