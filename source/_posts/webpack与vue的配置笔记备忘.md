@@ -1,5 +1,5 @@
 ---
-title: webpack+vue 的配置笔记备忘（continue...）
+title: webpack+vue 的配置笔记备忘
 date: 2019-03-23 12:33:00
 categories:
 - 前端技术
@@ -441,6 +441,7 @@ console.log(myTitle + ' --- ' + content)//myTitle是title的别名，对应test.
 ```
 
 ### 4 使用路由
+#### 4.1 通用案例（单路由）
 （1）定义备用组件，假设有 components 目录，该路径下新建 pageOne.vue、pageTwo.vue，两者结构及内容类似：
 ```
 <template>
@@ -518,6 +519,135 @@ new Vue({
 });
 ```
 **注意：在模块化工程中，必须使用 `Vue.use()` 安装路由模块 `Vue.use(VueRouter);`**
+
+**附加内容：history 模式的弊端**
+某些情况下不希望在 URL 中存在 # 标记，用 history 模式可以避免，但是换成 history 模式会导致页面刷新无法显示。对于这个问题，我们只需要在服务器配置，如果 URL 匹配不到任何静态资源，跳转到默认的 index.html。以 nginx 的配置为例：
+
+案例 1，该方式容易被第三方劫持
+```
+location / {
+    root   /data/nginx/html;
+    index  index.html index.htm;
+    error_page 404 /index.html;
+}
+```
+方案 2：
+```
+location / {
+    root   /data/nginx/html;
+    index  index.html index.htm;
+    if (!-e $request_filename) {
+        rewrite ^/(.*) /index.html last;
+        break;
+    }
+}
+```
+方案 3，vue.js 官方教程里提到的 https://router.vuejs.org/zh-cn/essentials/history-mode.html
+```
+server {
+    #默认端口是 80，如果端口没被占用可以不用修改
+    listen  9999;
+    server_name  localhost;
+    #vue 项目的打包后的 dist
+    root E:/dist;
+    location / {
+        #需要指向下面的 @router 否则会出现 vue 的路由在 nginx 中刷新出现 404
+        try_files $uri $uri/ @router;
+        index  index.html index.htm;
+    }
+    #对应上面的 @router，主要原因是路由的路径资源并不是一个真实的路径，所以无法找到具体的文件
+    #因此需要 rewrite 到 index.html 中，然后交给路由在处理请求资源
+    location @router {
+        rewrite ^.*$ /index.html last;
+    }
+    #其他部分略……
+}
+```
+
+#### 4.1 动态路由匹配
+假设有一个 User 组件，对于所有 ID 各不相同的用户，都要使用这个组件来渲染。那么，我们可以在 vue-router 的路由路径中使用动态路径参数来达到这个效果：
+```
+{ path: '/user/:id',name: "user", component: User }
+```
+现在呢，像 /user/foo 和 /user/bar 都将映射到相同的路由。也可以在组件中获取到传入的动态参数和 name 属性：
+```
+<template>
+    <div>
+        <ul>
+            <li>
+                <router-link to="/user/foo">Go</router-link>
+            </li>
+            <li>路由名称：{{getRouteName}}</li>
+            <li>路由参数：{{getRouteParam}}</li>
+        </ul>
+        <router-view></router-view>
+    </div>
+</template>
+
+<script>
+    export default {
+        computed: {
+            getRouteName() {
+                return this.$route.name;
+            },
+            getRouteParam(){
+                return this.$route.params.id;
+            }
+        }
+    }
+</script>
+
+<style scoped></style>
+```
+**注意：`return this.$route.params.id;` 的 id 参数没有自动完成提示，IDE 可能会报 `Unresolved variable`，但是可以正常获取。**
+
+#### 4.2 路由查询参数
+
+
+
+#### 4.3 通配符路由
+
+
+
+#### 4.4 响应路由参数的变化
+当使用路由参数时，例如从 /user/foo 导航到 /user/bar，原来的组件实例会被复用。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。不过，这也意味着组件的生命周期钩子不会再被调用。
+
+复用组件时，想对路由参数的变化作出响应的话，你可以简单地 watch (监测变化) $route 对象：
+```
+// 其他内容略
+<script>
+    export default {
+        computed: {
+            getRouteName() {
+                return this.$route.name;
+            },
+            getRouteParam(){
+                return this.$route.params.id;
+            }
+        }，
+        watch: {
+          '$route' (to, from) {
+            // 对路由变化作出响应...
+          }
+        }
+    }
+</script>
+```
+或者使用 2.2 中引入的 beforeRouteUpdate 导航守卫：（**该部分要细化修改**）
+```
+const User = {
+  template: '...',
+  beforeRouteUpdate (to, from, next) {
+    // react to route changes...
+    // don't forget to call next()
+  }
+}
+```
+#### 4.5 匹配优先级
+有时候，同一个路径可以匹配多个路由，此时，匹配的优先级就按照路由的定义顺序：谁先定义的，谁的优先级就最高。
+
+#### 4.6 路由嵌套
+
 
 ### 5 子路由（待完善）
 还是使用上面的例子，子路由，独立一个路由 `router.js` 文件，内容如下：
