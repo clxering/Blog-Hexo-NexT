@@ -33,15 +33,14 @@ Query OK, 0 rows affected (0.00 sec)
 
 **ECS云服务器安全组设置如下：**
 
-![ECS云服务器安全组设置](https://upload-images.jianshu.io/upload_images/5492471-ecc92888bc39297f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img 1.png %}
 
 **轻量应用服务器防火墙设置如下：**
 
-![轻量应用服务器防火墙设置](https://upload-images.jianshu.io/upload_images/5492471-821647534bf36242.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
+{% asset_img 2.png %}
 
 ### 3、设置Navicat
 
 进入 Navicat，新建连接，在「常规」选项卡中输入开放权限时的信息，用户名：root；密码：123456
 
-![设置Navicat](https://upload-images.jianshu.io/upload_images/5492471-79f66eabf26b49dd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img 3.png %}

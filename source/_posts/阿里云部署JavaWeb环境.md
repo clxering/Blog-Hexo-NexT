@@ -1,5 +1,5 @@
 ---
-title: 阿里云部署JavaWeb环境
+title: 阿里云部署 JavaWeb 环境
 date: 2018-10-05 17:33:28
 categories:
 - 后端技术
@@ -57,7 +57,7 @@ Tomcat started.
 ```
 - 在阿里云防火墙规则中开启8080端口
 
-![开启8080端口](https://upload-images.jianshu.io/upload_images/5492471-61717358be26203e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img 1.png %}
 
 - 7、此时在浏览器输入公网IP和端口号：`xxx.xxx.xxx.xxx：8080`，如果显示tomcat主页就说明部署完成
 
@@ -119,7 +119,7 @@ mysql -u用户名 -p密码
 
 ## 安装MySQL时的问题
 
-### ⭐远程访问错误
+### ⭐ 远程访问错误
 
 远程访问授权时出现如下错误：
 `ERROR 1558 (HY000): Column count of mysql.user is wrong. Expected 43, found 42. Created with MySQL 50556, now running 50640. Please use mysql_upgrade to fix this error.`

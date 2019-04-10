@@ -17,7 +17,7 @@ tags:
 - 在代码库新建目录：`.github`
 - 在 `.github` 目录下添加 `ISSUE_TEMPLATE.md` 文件作为 issues 默认模版。当创建 issue 时，若未建立多模版或选择了 `Open a regular issue` 时，系统会引用该模版。
 
-![引用默认模版](https://upload-images.jianshu.io/upload_images/5492471-f042242a914cbcbe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img 1.png %}
 
 #### 1.2 多模版
 - 在代码库新建目录：`.github/ISSUE_TEMPLATE`
