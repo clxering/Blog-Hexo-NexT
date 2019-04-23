@@ -531,3 +531,10 @@ open-files-limit = 8192
 ```
 which mysql
 ```
+
+### ⭐ SpringBoot 连接 MySql 8.x 时出现 `CLIENT_PLUGIN_AUTH is required` 异常
+修改 mysql-connector-java 依赖版本为低版本，如：
+```
+// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
+```
