@@ -26,6 +26,13 @@ D:\mysql8.0.15\bin>mysqld --initialize --console
 ```
 
 4、安装mysql服务，运行命令 `net start mysql`
+**附加内容：执行 `net start mysql` 时提示：**
+```
+服务名无效。
+
+请键入 NET HELPMSG 2185 以获得更多的帮助。
+```
+此时重新安装服务即可：`mysqld -install`
 
 5、登录，命令 `mysql -u root -p`，输入之前的随机密码
 
@@ -537,4 +544,13 @@ which mysql
 ```
 // https://mvnrepository.com/artifact/mysql/mysql-connector-java
 compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
+```
+
+### 执行 mysql 命令时提示 command not found 的解决办法
+在 etc/profile 添加环境变量即可，如下：
+```
+#set mysql environment
+export MYSQL_HOME=/usr/java/mysql-8.0.15
+export CLASSPATH=.:$MYSQL_HOME/lib:$CLASSPATH
+export PATH=$MYSQL_HOME/bin:$MYSQL_HOME:$PATH
 ```

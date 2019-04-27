@@ -239,7 +239,7 @@ Caused by: org.springframework.context.ApplicationContextException: Unable to st
 ### ⭐ spring-boot-starter-parent 依赖
 `spring-boot-starter-parent` 是 maven 独有的，Maven 用户可以通过继承 `spring-boot-starter-parent` 项目来获得一些合理的默认配置。如果使用 Gradle，则不需要该依赖。
 
-### ⭐ Spring Boot 命令行修改默认配置
+### ⭐ SpringBoot 命令行修改默认配置
 - 修改默认端口：`java -jar test.jar --server.port=9090`
 - 收集日志：`java -jar test.jar > user.log &`
 - 后台启动命令（linux）：`nohup java -jar test.jar &`
@@ -263,3 +263,13 @@ Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get 
 2. 问题原因：`<context:property-placeholder location="classpath:dataSource.properties"/>` 中 system-properties-mode 属性默认取值为 "ENVIRONMENT"，即从系统环境中去读取 properties 文件，找不到文件则报错。
 3. 解决方案：增加属性 `system-properties-mode="FALLBACK"`，即：`<context:property-placeholder location="classpath:dataSource.properties" system-properties-mode="FALLBACK"/>`，要求从本地读取 properties。
 4. 注意事项：context 标签在 Spring 配置文件中是唯一的。
+
+### SpringBoot 不显示默认的网页标签页小图标
+增加如下配置：
+```
+spring:
+  mvc:
+    favicon:
+      enabled: false
+```
+再将自定义的 .ico 文件放置到 classpath 下（resources 文件夹）即可。

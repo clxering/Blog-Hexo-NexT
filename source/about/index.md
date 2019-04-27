@@ -18,4 +18,4 @@ Currently, my focus is mainly on JavaWeb. The back-end technologies used are Spr
 - Record the learning process of new methods, concepts and practices.
 
 ## Words in the End
-Welcome communication and guidance, my contact information is at the bottom of the blog. thank you！
+Welcome communication and guidance, my contact information is at the bottom of the blog. Thank you！

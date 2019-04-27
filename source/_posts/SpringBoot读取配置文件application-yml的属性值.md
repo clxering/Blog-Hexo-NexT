@@ -2,7 +2,9 @@
 title: SpringBoot 读取配置文件 application.yml 的属性值
 date: 2019-04-23 21:30:26
 categories:
+- 后端技术
 tags:
+- Spring
 ---
 
 > 摘要：记录 SpringBoot 读取配置文件 application.yml 的属性值的步骤和示例。
@@ -28,7 +30,7 @@ myProps: #自定义的属性和值
   - name: abc
    value: abcValue
   - name: efg
-   value: efgValue 
+   value: efgValue
  listProp2:
   - config2Value1
   - config2Vavlue2
