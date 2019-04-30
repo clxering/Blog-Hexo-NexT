@@ -249,8 +249,8 @@ CREATE USER test IDENTIFIED BY '123456';
 ```
 - 可使用下列语句查看下用户 test 的权限：
 ```
-SELECT * FROM USER WHERE USER='test' ;
-SHOW GRANTS FOR test;
+select * from user where user='test';
+show grants for test;
 ```
 - 下列语句给用户 test 在 database 数据库中对的所有表授权，如：EXECUTE（执行存储过程），INSERT，SELECT，UPDATE 权限，@'%' 表示来自任意 IP 的访问：
 ```

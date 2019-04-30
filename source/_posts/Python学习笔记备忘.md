@@ -349,5 +349,265 @@ def describe_pet(animal_type, pet_name):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
 
+# 演示关键字实参
 describe_pet(animal_type='hamster', pet_name='harry')
 ```
+
+## 函数默认值
+使用默认值时，在形参列表中必须先列出没有默认值的形参，再列出有默认值的实参。这让 Python 依然能够正确地解读位置实参。
+
+```
+def describe_pet(pet_name, animal_type='dog'):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+# 演示默认值
+describe_pet(pet_name='willie')
+```
+
+## 让实参变成可选的
+可给实参指定一个空字符串作为默认值，在用户没有提供值时则不使用这个实参。
+
+```
+def get_formatted_name(first_name, last_name, middle_name=''):
+    """返回整洁的姓名"""
+    if middle_name:
+        full_name = first_name + ' ' + middle_name + ' ' + last_name
+    else:
+        full_name = first_name + ' ' + last_name
+    return full_name.title()
+
+musician = get_formatted_name('jimi', 'hendrix')
+print(musician)
+
+musician = get_formatted_name('john', 'hooker', 'lee')
+print(musician)
+```
+
+## 禁止函数修改列表
+向函数传递列表的副本而不是原件；这样函数所做的任何修改都只影响副本，而丝毫不影响原件。 格式如下：
+
+```
+function_name (list_name [:])
+```
+注意：虽然向函数传递列表的副本可保留原始列表的内容，但除非有充分的理由需要传递副本，否则还是应该将原始列表传递给函数，因为让函数使用现成列表可避免花时间和内存创建副本，从而提高效率，在处理大型列表时尤其如此。
+
+## 传递任意数量的实参
+
+```
+def make_pizza(*toppings):
+    """打印顾客点的所有配料"""
+    for topping in toppings:
+        print("- " + topping)
+
+make_pizza('pepperoni')
+make_pizza('mushrooms', 'green peppers', 'extra cheese')
+```
+
+## 使用任意数量的关键字实参
+有时候，需要接受任意数量的实参，但预先不知道传递给函数的会是什么样的信息。在这种情况下，可将函数编写成能够接受任意数量的键值对，即调用语句提供了多少就接受多少。
+
+```
+def build_profile(first, last, **user_info):
+    """形参 `**user_info` 中的两个星号让 Python 创建一个名为 user_info 的空字典，并将收到的所有名称值对都封装到这个字典中。"""
+    profile = {}
+    profile['first_name'] = first
+    profile['last_name'] = last
+    for key, value in user_info.items():
+        profile[key] = value
+        return profile
+
+user_profile = build_profile('albert', 'einstein',location='princeton',field='physics')
+print(user_profile)
+```
+
+## 导入整个模块
+假设存在 pizza.py 文件，例子：
+
+```
+import pizza
+
+pizza.make_pizza(16, 'pepperoni')
+pizza.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+## 导入特定的函数或类
+若使用这种语法，调用函数时就无需使用句点。格式：
+
+```
+from module_name import name
+```
+
+## 使用 as 给函数指定别名
+例子：
+
+```
+from pizza import make_pizza as mp
+```
+
+## 导入模块中的所有函数
+
+```
+from pizza import *
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+注意：使用并非自己编写的大型模块时，好不要采用这种导入方法，如果模块中有函数的名称与你的项目中使用的名称相同，可能导致意想不到的结果：Python 可能遇到多个名称相同的函数或变量，进而覆盖函数，而不是分别导入所有的函数。佳的做法是，要么只导入你需要使用的函数，要么导入整个模块并使用句点表示法。
+
+## 方法__init__()
+例子：
+
+```
+class Dog():
+    """一次模拟小狗的简单尝试"""
+    def __init__(self, name, age):
+        """初始化属性name和age"""
+        self.name = name
+        self.age = age
+
+def sit(self):
+    """模拟小狗被命令时蹲下"""
+    print(self.name.title() + " is now sitting.")
+
+def roll_over(self):
+    """模拟小狗被命令时打滚"""
+    print(self.name.title() + " rolled over!")
+```
+
+类中的函数称为方法；方法 `__init__()` 定义成了包含三个形参：self、name 和 age。在这个方法的定义中，形参 self 必不可少，还必须位于其他形参的前面。Python调用这个 `__init__()` 方法来创建 Dog 实例时，将自动传入实参 self。每个与类相关联的方法 调用都自动传递实参 self，它是一个指向实例本身的引用，让实例能够访问类中的属性和方法。我们创建 Dog 实例时，Python 将调用 Dog 类的方法 `__init__()`。我们将通过实参向 Dog() 传递名字和年龄；self 会自动传递，因此我们不需要传递它。每当我们根据 Dog 类创建实例时，都只需给后两个形参（name 和 age）提供值。
+
+## 根据类创建实例
+
+```
+my_dog = Dog('willie', 6)
+```
+
+## 给属性指定默认值
+类中的每个属性都必须有初始值，哪怕这个值是 0 或空字符串。在有些情况下，如设置默认 值时，在方法 `__init__()` 内指定这种初始值是可行的；如果你对某个属性这样做了，就无需包含为它提供初始值的形参。
+
+```
+class Car():
+    def __init__(self, make, model, year):
+        """初始化描述汽车的属性"""
+        self.make = make
+        self.model = model
+        self.year = year
+        self.odometer_reading = 0
+```
+
+## 继承
+
+```
+class Car():
+    """汽车类"""
+    ……（略）
+
+class ElectricCar(Car):
+    """电动汽车的独特之处"""
+    def __init__(self, make, model, year):
+        """初始化父类的属性"""
+        super().__init__(make, model, year)
+```
+
+## 重写父类的方法
+可在子类中定义一个这样的方法，即它与要重写的父类方法同名。这样，Python 将不会考虑这个父类方法，而只关注你在子类中定义的相应方法。
+
+## 使用标准库 OrderedDict
+OrderedDict 实例的行为几乎与字典相同，区别只在于记录了键值对的添加顺序。
+
+## 从文件中读取数据
+- 读取整个文件
+
+```
+with open('pi_digits.txt') as file_object:
+    contents = file_object.read()
+    print(contents)
+```
+
+注意：关键字 with 在不再需要访问文件后将其关闭。让 Python 去确定关闭时机：你只管打开文件，并在需要时使用它。
+
+- 逐行读取
+
+```
+filename = 'pi_digits.txt'
+
+with open(filename) as file_object:
+    for line in file_object:
+        print(line)
+```
+
+## 写入文件
+- 写入空文件
+
+```
+
+```
+
+## 分析CSV 文件
+- 获取文件头
+csv 模块包含在 Python 标准库中，可用于分析 CSV 文件中的数据行。模块 csv 包含函数 next()，调用它并将阅读器对象传递给它时，它将返回文件中的下一行。调用了 next() 一次，因此得到的是文件的第一行，其中包含文件头。
+
+```
+import csv
+
+filename = 'sitka_weather_07-2014.csv'
+
+with open(filename) as f:
+    reader = csv.reader(f)
+    header_row = next(reader)
+
+# 输出文件第一行
+print(header_row)
+```
+
+- 打印文件头及其位置
+对列表调用 `enumerate()` 来获取每个元素的索引及其值。用于判断每一行数据中，哪一列是需要的。
+
+```
+for index, column_header in enumerate(header_row):
+	print(index, column_header)
+```
+
+- 提取并读取数据
+遍历全部内容，取每一行的第 2 列存入列表。
+
+```
+highs = []
+
+for row in reader:
+	highs.append(row[1])
+
+print(highs)
+```
+
+## 使用 int() 将字符串转换为数字值
+（略）
+
+## 使用 float() 将字符串转换为数字值
+（略）
+
+## request 包的使用
+- 安装 request
+
+```
+$ pip install --user requests
+```
+
+- 找出GitHub上星级最高的Python项目
+
+```
+import requests
+
+# 执行API调用并存储响应
+url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
+r = requests.get(url)
+print("Status code:", r.status_code)
+# 将API响应存储在一个变量中?
+response_dict = r.json()
+# 处理结果
+print(response_dict.keys())
+```
+
+- 监视API 的速率限制
