@@ -17,6 +17,14 @@ tags:
 print("Hello Python world!")
 ```
 
+
+
+## 安装 jupyter
+```
+pip install jupyter
+```
+安装完成后，切换到 .ipynb 文件目录下，在命令行中执行 `jupyter notebook` 然后会在浏览器中打开目录。或者指定打开某个文件 `jupyter notebook notebook.ipynb`
+
 ## 变量名应使用小写
 （例子，略）
 
@@ -76,6 +84,7 @@ print(message)
 >>> 3 * 0.1
 0.30000000000000004
 ```
+所有语言都存在这种问题，没有什么可担心的。Python 会尽力找到一种方式，以尽可能精确 地表示结果，但鉴于计算机内部表示数字的方式，这在有些情况下很难。
 
 ## str()
 - 字符串转化
