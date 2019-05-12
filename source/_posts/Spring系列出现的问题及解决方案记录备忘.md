@@ -247,7 +247,7 @@ Caused by: org.springframework.context.ApplicationContextException: Unable to st
 - 指定运行内存：`java -Xms1024m -Xmx1024m -jar test.jar`
 可综合以上命令：`nohup java -jar -Xms1024m -Xmx1024m -jar test.jar --spring.profiles.active=dev &`
 
-### ⭐ 引入 MySql 时出现异常
+### ⭐ 引入 MySql 8.0.15 时出现异常
 Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: The server time zone value '?й???????' is unrecognized or represents more than one time zone. You must configure either the server or JDBC driver (via the serverTimezone configuration property) to use a more specifc time zone value if you want to utilize time zone support.
 
 在连接字符串后面加上?serverTimezone=UTC
@@ -258,13 +258,13 @@ Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get 
 
 或者还有另一种选择：jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8，这个是解决中文乱码输入问题，当然也可以和上面的一起结合：jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
 
-### ⭐Spring 引入 properties 文件无法识别配置信息
+### ⭐ Spring 引入 properties 文件无法识别配置信息
 1. 问题描述：使用 `<context:property-placeholder location="classpath:dataSource.properties"/>` 引入 properties 文件时，无法识别其中的配置信息。
 2. 问题原因：`<context:property-placeholder location="classpath:dataSource.properties"/>` 中 system-properties-mode 属性默认取值为 "ENVIRONMENT"，即从系统环境中去读取 properties 文件，找不到文件则报错。
 3. 解决方案：增加属性 `system-properties-mode="FALLBACK"`，即：`<context:property-placeholder location="classpath:dataSource.properties" system-properties-mode="FALLBACK"/>`，要求从本地读取 properties。
 4. 注意事项：context 标签在 Spring 配置文件中是唯一的。
 
-### SpringBoot 不显示默认的网页标签页小图标
+### ⭐ SpringBoot 不显示默认的网页标签页小图标
 增加如下配置：
 ```
 spring:
@@ -273,3 +273,182 @@ spring:
       enabled: false
 ```
 再将自定义的 .ico 文件放置到 classpath 下（resources 文件夹）即可。
+
+### ⭐ Spring 向静态成员进行依赖注入
+以一个 service 为例子。如果希望通过 UserService 使用其中的静态方法，可以创建一个带 `@PostConstruct` 注解的 init() 方法即可，如下所示：
+```
+@Service
+public class UserService {
+
+    @Autowired
+    private UserMapping userMapping;
+
+    private static UserMapping userMappingStatic;
+
+    @PostConstruct
+    public void init() {
+        userMappingStatic = this.userMapping;
+    }
+
+    public static List<Entity> getUserDataByID(int id) {
+        return userMappingStatic.getUserDataByID(id);
+    }
+
+    public static void insertUserData(Entity entity) {
+        userMappingStatic.insertUserData(entity);
+    }
+}
+```
+静态方法在 spring 是不推荐使用的。依赖注入的主要目的是让容器去产生一个对象的实例，然后在整个生命周期中使用他们，同时也让测试工作更加容易。一旦使用静态方法，就不再需要去产生这个类的实例，这会让测试变得更加困难，同时你也不能为一个给定的类依靠注入方式去产生多个具有不同的依赖环境的实例。这种 static 字段是隐含共享的，并且是一种全局状态，spring 同样不推荐使用。
+
+### ⭐ Spring boot 配合 Mybatis 使用事务
+## 项目结构
+{% asset_img 1.png %}
+
+## 主要演示代码
+1、Application（添加 `@EnableTransactionManagement` 注解）
+```
+@SpringBootApplication
+@EnableTransactionManagement
+@MapperScan("defaultpackage.dao")
+public class Application {
+
+    public static void main(String[] args) {
+        Logger log= LoggerFactory.getLogger(Application.class);
+        SpringApplication.run(Application.class, args);
+        log.info("测试开始！");
+    }
+}
+```
+
+2、Entity
+```
+public class Entity {
+
+    private Integer id;
+    private String name;
+    private String age;
+
+    ……省略 get、set 以及构造等内容
+}
+```
+
+3、UserService（在需要事务的 service 方法添加 `@Transactional` 注解）
+其中的 insertUserDataAuto 方法展示了事务特性。循环插入 5 条数据，当 index == 2 时报运行时错误，此时查看数据库，发现已经回滚，没有相关数据出现。
+```
+@Service
+public class UserService {
+
+    @Autowired
+    private UserMapping userMapping;
+
+    public List<Entity> getUserDataByID(int id) {
+        return userMapping.getUserDataByID(id);
+    }
+
+    public void insertUserData(Entity entity) {
+        userMapping.insertUserData(entity);
+    }
+
+    @Transactional
+    public void insertUserDataAuto() {
+        for (int index = 5; index > 0; index--) {
+            if (index == 2) {
+                throw new RuntimeException("this is a wrong!");
+            }
+            userMapping.insertUserData(new Entity("newApple", String.valueOf(index)));
+        }
+    }
+}
+```
+
+4、Controller
+```
+@RestController
+public class Controller {
+
+    @Autowired
+    private UserService userService;
+
+    @RequestMapping("/find/{id}")
+    public List<Entity> findElement(@PathVariable int id) {
+        return userService.getUserDataByID(id);
+    }
+
+    @RequestMapping("/add/{name}/{age}")
+    public Entity addElement(@PathVariable String name, @PathVariable String age) {
+        Entity element = new Entity(name, age);
+        userService.insertUserData(element);
+        return element;
+    }
+
+    @RequestMapping("/add/run")
+    public void addNElement() {
+        userService.insertUserDataAuto();
+    }
+}
+```
+
+5、WebRunTest（仅为启动首页，与事务演示无关）
+```
+@Controller
+public class WebRunTest {
+    @RequestMapping("/")
+    public String GotoIndexWeb() {
+        return "index";
+    }
+}
+```
+
+6、UserMapping
+```
+@Repository
+public interface UserMapping {
+    List<Entity> getUserDataByID(int id);
+    void insertUserData(Entity entity);
+}
+```
+
+7、DataMapping.xml
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="defaultpackage.dao.UserMapping">
+    <select id="getUserDataByID" resultType="defaultpackage.domain.Entity">
+        SELECT * FROM users WHERE id=#{id}
+    </select>
+
+    <insert id="insertUserData" parameterType="defaultpackage.domain.Entity">
+        REPLACE into users (id, name, age) SELECT
+        #{id}, #{name}, #{age}
+        FROM DUAL
+        WHERE NOT EXISTS(SELECT name, age FROM users WHERE name=#{name} AND age=#{age})
+    </insert>
+</mapper>
+```
+
+8、application.yml
+```
+spring:
+  profiles:
+    active: product
+  datasource:
+    url: jdbc:mysql://localhost:3306/datatest?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: root
+    password: 123456
+  thymeleaf:
+    prefix: classpath:/
+
+server:
+  port: 8089
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+```
+
+## 要点
+- Application 添加 `@EnableTransactionManagement` 注解
+- 在需要事务的 service 方法添加 `@Transactional` 注解
