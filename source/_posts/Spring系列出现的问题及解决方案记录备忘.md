@@ -452,3 +452,32 @@ mybatis:
 ## 要点
 - Application 添加 `@EnableTransactionManagement` 注解
 - 在需要事务的 service 方法添加 `@Transactional` 注解
+
+## spring事务回滚规则
+
+指示 spring 事务管理器回滚一个事务的推荐方法是在当前事务的上下文内抛出异常。spring 事务管理器会捕捉任何未处理的异常，然后依据规则决定是否回滚抛出异常的事务。
+
+默认配置下，spring 只有在抛出的异常为运行时 unchecked 异常时才回滚该事务，也就是抛出的异常为 RuntimeException 的子类（Errors 也会导致事务回滚），而抛出 checked 异常则不会导致事务回滚。
+
+可以明确的配置在抛出那些异常时回滚事务，包括 checked 异常。也可以明确定义那些异常抛出时不回滚事务。
+
+还可以编程性的通过 setRollbackOnly() 方法来指示一个事务必须回滚，在调用完 setRollbackOnly() 后你所能执行的唯一操作就是回滚。
+
+`@Transactional` 可以作用于接口、接口方法、类以及类方法上。当作用于类上时，该类的所有 public 方法将都具有该类型的事务属性，同时，我们也可以在方法级别使用该标注来覆盖类级别的定义。
+
+虽然 `@Transactional` 注解可以作用于接口、接口方法、类以及类方法上，但是 Spring 建议不要在接口或者接口方法上使用该注解，因为这只有在使用基于接口的代理时它才会生效。另外， `@Transactional` 注解应该只被应用到 public 方法上，这是由 Spring AOP 的本质决定的。如果你在 protected、private 或者默认可见性的方法上使用 `@Transactional` 注解，这将被忽略，也不会抛出任何异常。
+
+默认情况下，只有来自外部的方法调用才会被 AOP 代理捕获，也就是，类内部方法调用本类内部的其他方法并不会引起事务行为，即使被调用方法使用 `@Transactional` 注解进行修饰。
+
+## `@Transational` 注解参数
+| 属性 | 类型 | 描述 |
+| :------| :------ | :------ |
+| value | String | 可选的限定描述符，指定使用的事务管理器 |
+| propagation | enum: Propagation | 可选的事务传播行为设置 |
+| isolation | enum: Isolation | 可选的事务隔离级别设置 |
+| readOnly | boolean | 读写或只读事务，默认读写 |
+| timeout | int (in seconds granularity) | 事务超时时间设置 |
+| rollbackFor | Class对象数组，必须继承自Throwable	 | 导致事务回滚的异常类数组 |
+| rollbackForClassName | 类名数组，必须继承自Throwable | 导致事务回滚的异常类名字数组 |
+| noRollbackFor | Class对象数组，必须继承自Throwable | 不会导致事务回滚的异常类数组 |
+| noRollbackForClassName | 类名数组，必须继承自Throwable | 不会导致事务回滚的异常类名字数组 |

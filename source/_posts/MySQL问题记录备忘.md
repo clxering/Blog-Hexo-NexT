@@ -554,3 +554,87 @@ export MYSQL_HOME=/usr/java/mysql-8.0.15
 export CLASSPATH=.:$MYSQL_HOME/lib:$CLASSPATH
 export PATH=$MYSQL_HOME/bin:$MYSQL_HOME:$PATH
 ```
+
+## MySQL 8.0.15 报 BEGIN NESTED EXCEPTION 警告
+可能会导致连接关闭，数据库 URL 需要声明是否使用 SSL 安全验证及指定服务器上的时区，将 useSSL 设置为 false，即：`?useSSL=false&serverTimezone=UTC"`
+```
+Sun May 12 22:08:48 CST 2019 WARN: Caught while disconnecting...
+
+EXCEPTION STACK TRACE:
+
+** BEGIN NESTED EXCEPTION **
+
+javax.net.ssl.SSLException
+MESSAGE: closing inbound before receiving peer's close_notify
+
+STACKTRACE:
+
+javax.net.ssl.SSLException: closing inbound before receiving peer's close_notify
+	at java.base/sun.security.ssl.Alert.createSSLException(Alert.java:133)
+	at java.base/sun.security.ssl.Alert.createSSLException(Alert.java:117)
+	at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:308)
+	at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:264)
+	at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:255)
+	at java.base/sun.security.ssl.SSLSocketImpl.shutdownInput(SSLSocketImpl.java:645)
+	at java.base/sun.security.ssl.SSLSocketImpl.shutdownInput(SSLSocketImpl.java:624)
+	at com.mysql.cj.protocol.a.NativeProtocol.quit(NativeProtocol.java:1319)
+	at com.mysql.cj.NativeSession.quit(NativeSession.java:182)
+	at com.mysql.cj.jdbc.ConnectionImpl.realClose(ConnectionImpl.java:1750)
+	at com.mysql.cj.jdbc.ConnectionImpl.close(ConnectionImpl.java:720)
+	at com.zaxxer.hikari.pool.PoolBase.quietlyCloseConnection(PoolBase.java:132)
+	at com.zaxxer.hikari.pool.HikariPool.lambda$closeConnection$1(HikariPool.java:434)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+
+
+** END NESTED EXCEPTION **
+```
+
+## MySQL 8.0.15 驱动类名称
+旧版驱动类是com.mysql.jdbc.Driver，但是如果你在8.0还继续用这个类，就会提示你：
+
+Loading class `com.mysql.jdbc.Driver'. This is deprecated. The new driver class is `com.mysql.cj.jdbc.Driver'. The driver is automatically registered via the SPI and manual loading of the driver class is generally unnecessary.
+所以我们需要用新的驱动类，在配置文件中改为：
+
+driver=com.mysql.cj.jdbc.Driver
+
+## MySQL 8.0.15 时区
+现在我们虽然填对了驱动类，但是又有一个新的报错：
+
+java.sql.SQLException: The server time zone value 'ÖÐ¹ú±ê×¼Ê±¼ä' is unrecognized or represents more than one time zone. You must configure either the server or JDBC driver (via the serverTimezone configuration property) to use a more specifc time zone value if you want to utilize time zone support.
+这里就需要我们手动指定时区，如果你的服务器也是东八区（GMT+8），那么在URL后面加上参数serverTimezone=GMT%2B8即可：
+
+url=jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8
+
+## MySQL 8.0.15 SSL
+之后还有一个在关闭连接对象时会产生的一个无关紧要的报错，不解决也可以正常使用，但是占据控制台的大量篇幅，导致使用体验极差：
+
+javax.net.ssl.SSLException
+MESSAGE: closing inbound before receiving peer's close_notify
+MySQL 8.0开始，数据库URL需要设置是否使用SSL安全连接，在URL后面加上参数useSSL=false即可，多个参数键值对中间用&隔开：
+
+url=jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8&useSSL=false
+
+## MySQL 8.0.15 Public Key Retrieval报错
+重启服务器后悔出现Public Key Retrieval报错：
+
+java.sql.SQLNonTransientConnectionException: Public Key Retrieval is not allowed
+在URL后加上allowPublicKeyRetrieval=true即可
+
+url=jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true
+
+## MySQL 8.0.15 getTables默认返回所有库的表
+8.0及以上版本的驱动默认将nullCatalogMeansCurrent的默认值由true改为了false，如果使用DatabaseMetaData类的对象调用getTables方法，就会返回所有库的表，而非在url参数中指定的数据库（本例中数据库名为test）。此时就需要手动在参数中指定nullCatalogMeansCurrent值为true：
+
+url=jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8&useSSL=false&useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+
+## 查看当前使用的数据库
+```
+mysql>select database();
+mysql>status;
+mysql>show tables;
+mysql>show databases;//可以查看有哪些数据库,返回数据库名(databaseName)
+mysql>use databaseName;  //更换当前使用的数据库
+mysql>show tables; //返回当前数据库下的所有表的名称
+```

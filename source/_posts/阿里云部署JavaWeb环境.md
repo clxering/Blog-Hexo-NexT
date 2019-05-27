@@ -12,17 +12,24 @@ tags:
 <!-- more -->
 
 ## 环境、工具及版本
-- 操作系统：CentOS Linux 7.4.1708 (Core)
-- JDK 8
-- SecureFX、SecureCRT
+- CentOS Linux 7.4.1708 (Core)
+- Corretto 11
+- SecureFX、SecureCRT（可选）
 - MySQL 5.1.47
-- MySQL 8.0.15
+- MySQL 8.0.15（可选）
 
 ## 安装 JDK/JRE 参考步骤
-- 使用 SecureFX 连接服务器，将本地的 `jdk-8u171-linux-x64.tar.gz` 上传至 root 目录
 - 在 etc 下建立存放目录，可以用图形化工具建立，或者命令行：`mkdir /etc/java`
-- 使用 SecureCRT 进入 root 目录，执行命令：`tar zxvf jdk-8u171-linux-x64.tar.gz -C /etc/java/`
+- 在 etc 下使用命令：`wget https://d3pxv6yz143wms.cloudfront.net/11.0.3.7.1/amazon-corretto-11.0.3.7.1-linux-x64.tar.gz`，或使用 SecureFX 连接服务器，将本地文件上传。
+- 在 etc 下执行命令：`tar zxvf jdk-8u171-linux-x64.tar.gz -C /etc/java/`
 - 解压完成后，在 etc 下修改 profile 文件，在末尾添加内容后保存：
+```
+#set java environment
+export JAVA_HOME=/etc/java/amazon-corretto-11.0.3.7.1-linux-x64
+export CLASSPATH=.:$JAVA_HOME/lib:$CLASSPATH
+export PATH=$JAVA_HOME/bin:$JAVA_HOME:$PATH
+```
+**附加内容：若安装 JDK 8，环境变量设置可改为：**
 ```
 #set java environment
 export JAVA_HOME=/usr/java/jdk/jdk1.8.0_171
@@ -30,20 +37,14 @@ export JRE_HOME=/usr/java/jdk/jdk1.8.0_171/jre
 export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH
 export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$JAVA_HOME:$PATH
 ```
-**附加内容：若安装 JDK 8 以上版本，已经不再有 JRE。以 Amazon Corretto 为例，环境变量设置可改为：**
-```
-#set java environment
-export JAVA_HOME=/etc/java/amazon-corretto-11.0.3.7.1-linux-x64
-export CLASSPATH=.:$JAVA_HOME/lib:$CLASSPATH
-export PATH=$JAVA_HOME/bin:$JAVA_HOME:$PATH
-```
 - 使用命令：`source /etc/profile`，让环境变量生效
 - 输入命令：`java -version`，查看 JDK 是否安装成功，如果安装成功则显示版本号信息：
 ```
-java version "1.8.0_171"
-Java(TM) SE Runtime Environment (build 1.8.0_171-b11)
-Java HotSpot(TM) 64-Bit Server VM (build 25.171-b11, mixed mode)
+openjdk version "11.0.3" 2019-04-16 LTS
+OpenJDK Runtime Environment Corretto-11.0.3.7.1 (build 11.0.3+7-LTS)
+OpenJDK 64-Bit Server VM Corretto-11.0.3.7.1 (build 11.0.3+7-LTS, mixed mode)
 ```
+
 ## 安装 tomcat 参考步骤
 - 使用 SecureFX 连接服务器，将本地的 `apache-tomcat-7.0.88.tar.gz` 上传至 root 目录
 - 在 etc 下建立存放目录，可以用图形化工具建立，或者命令行：`mkdir /etc/tomcat`
@@ -53,7 +54,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.171-b11, mixed mode)
 export JAVA_HOME=/etc/java/amazon-corretto-11.0.3.7.1-linux-x64
 export JRE_HOME=/usr/java/jdk/jdk1.8.0_171/jre
 ```
-**注：若安装 JDK 8 以上版本，已经不再有 JRE，而且 tomcat 7 也并不支持新版本。这里推荐使用 SpringBoot，不用再独立安装 tomcat。**
+**注：若安装 JDK 8 以上版本，已经不再有 JRE，而且 tomcat 7 也并不支持新版本。**
 - 使用 SecureCRT 进入 tomcat 目录的 bin，输入 `./startup.sh` 后即可启动 tomcat，如果启动成功则显示以下信息：
 ```
 [root@izwabcdefghijklh8jykfdz bin]# ./startup.sh
@@ -196,10 +197,10 @@ mysql>GRANT Select,Update,Insert,Delete PRIVILEGES ON *.* TO 'mark' @’20.21.22
 ```
 > 有关用户访问权限的设置可参看我的另一篇文章：[MySql用户访问权限的设置](https://www.jianshu.com/p/1b17442edd38)
 
-⭐ mysql配置文件位置：`/etc/my.cnf`
+⭐ mysql 5.1.47 配置文件位置：`/etc/my.cnf`
 
 ## 安装 MySQL 8.0.15 参考步骤
-- （可选步骤）移除 CentOS 7 默认安装的 mariaDB，执行命令：`yum remove mariadb-libs.x86_64`。该步骤需要获得 root 权限。
+- （可选步骤）移除 CentOS 7 默认安装的 mariaDB，执行命令：`yum remove mariadb-libs.x86_64`。执行该步骤需要获得 root 权限。
 - 在 etc 下建立存放目录，可以用图形化工具建立，或者命令行：`mkdir /etc/mysql`
 - 前往获取 [Yum Repository](https://dev.mysql.com/downloads/repo/yum/) 下载链接，选择 `mysql80-community-release-el7-2.noarch.rpm`
 
@@ -209,8 +210,8 @@ mysql>GRANT Select,Update,Insert,Delete PRIVILEGES ON *.* TO 'mark' @’20.21.22
 
 {% asset_img 3.png %}
 
-- 使用链接地址在命令行执行：`wget https://dev.mysql.com/get/mysql80-community-release-el7-2.noarch.rpm`，下载安装包。
-- 执行 `yum localinstall mysql80-community-release-el7-2.noarch.rpm`，将安装包添加到本地 /home/admin 目录下。
+- 在命令行执行：`wget https://dev.mysql.com/get/mysql80-community-release-el7-2.noarch.rpm`，下载安装包。
+- 执行 `yum localinstall mysql80-community-release-el7-2.noarch.rpm`，安装包将添加到本地 /home/admin 目录下。
 - 可执行 `yum search mysql`，观察搜索结果是否有 mysql-community-server，存在则说明添加成功：
 
 {% asset_img 4.png %}
@@ -235,7 +236,7 @@ set global validate_password.length=1;
 - 执行 `service mysqld restart`，重启服务，使配置生效。
 - 执行 `mysql -u root -p`，无需键入内容，直接回车即可登录。
 - 执行下列语句清空密码：
-```$xslt
+```
 use mysql;
 update user set authentication_string = '' where user = 'root';
 ```
@@ -294,6 +295,80 @@ rpm -ev mysql-community-libs-8.0.15-1.el7.x86_64
 /etc/logrotate.d/mysql
 /etc/mysql
 /var/lib/mysql
+```
+
+## nginx 1.16.0 的安装
+nginx 中 gzip 模块需要 zlib 库，rewrite 模块需要 pcre 库，ssl 功能需要 openssl 库。以 `/usr/mix` 安装目录为例：
+
+- 建立 mix 目录
+```
+$ mkdir mix
+```
+- 安装 GCC 和 GCC-C++
+```
+$ yum install gcc
+$ yum install gcc-c++
+```
+> 注意：
+若未安装 GCC，安装 Nginx 会报如下错误：
+```
+./configure: error: C compiler cc is not found
+```
+若未安装GCC-C++，安装 PCRE 库时报如下错误：
+```
+configure: error: You need a C++ compiler for C++ support.
+```
+
+- 编译安装 PCRE 库
+```
+$ cd /usr/
+$ wget https://sourceforge.net/projects/pcre/files/pcre/8.43/pcre-8.43.tar.gz
+$ tar -zxvf pcre-8.43.tar.gz -C /usr/mix/
+$ cd mix/pcre-8.43
+$ ./configure
+$ make && make install
+```
+注意：这里使用 pcre 而不用 pcre2
+- 编译安装 zlib 库
+```
+$ cd /usr/
+$ wget http://www.zlib.net/zlib-1.2.11.tar.gz
+$ tar -zxvf zlib-1.2.11.tar.gz -C /usr/mix/
+$ cd mix/zlib-1.2.11
+$ ./configure
+$ make && make install
+```
+- 编译安装 openssl
+```
+$ cd /usr/
+$ wget https://www.openssl.org/source/openssl-1.0.2r.tar.gz
+$ tar -zxvf openssl-1.0.2r.tar.gz -C /usr/mix/
+$ cd mix/openssl-1.0.2r
+$ ./config
+$ make && make install
+```
+- 编译安装 nginx，并添加 PCRE、zlib 、openssl 的源码路径
+```
+$ cd /usr/
+$ wget http://nginx.org/download/nginx-1.16.0.tar.gz
+$ tar -zxvf nginx-1.16.0.tar.gz -C /usr/mix/
+$ cd mix/nginx-1.16.0
+$ ./configure --prefix=/usr/mix/nginx --with-pcre=/usr/mix/pcre-8.43 --with-zlib=/usr/mix/zlib-1.2.11 --with-openssl=/usr/mix/openssl-1.0.2r
+$ make && make install
+```
+- 启动 Nginx，默认端口为 80
+```
+$ ./usr/mix/nginx/sbin/nginx
+```
+- 查看工作情况
+```
+$ ps -ef | grep nginx
+```
+- 其他命令
+```
+./sbin/nginx -s reload            # 重新载入配置文件
+./sbin/nginx -s reopen            # 重启 Nginx
+./sbin/nginx -s stop              # 停止 Nginx
 ```
 
 ## 解压 filename.tar.xz 文件
@@ -369,4 +444,4 @@ netstat -ntulp | grep 3306   //查看所有3306端口使用情况
 查询出来的结果，根据 ID 号可以用 kill 命令终止后台运行的任务。
 
 ### 其他命令
-- jobs 命令：查看当前终端后台运行的任务，jobs的状态可以是running，stopped，Terminated。`+` 号表示当前任务，`-` 号表示后一个任务。注：该命令在使用 nohup 后紧接使用。
+- jobs 命令：查看当前终端后台运行的任务，jobs 的状态可以是 running，stopped，Terminated。`+` 号表示当前任务，`-` 号表示后一个任务。注：该命令可在使用 nohup 后紧接使用。

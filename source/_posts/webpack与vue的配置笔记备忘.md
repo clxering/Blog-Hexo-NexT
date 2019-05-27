@@ -191,6 +191,23 @@ plugins: [
 
 **注意：如果直接使用 webpack 命令输出 bundle.js 到指定路径，试图在 index.html 通过 `<script>` 标签引入会导致失败，提示找不到文件。因此，应使用 html-webpack-plugin 进行。**
 
+#### 4.2 使用 ProvidePlugin 插件
+其加载的模块在使用时，不再需要 import 或 require 进行引入：
+```
+plugins: [
+        new webpack.ProvidePlugin({
+            //引入jquery
+            $: "jquery",
+            jQuery: "jquery",
+            "windows.jQuery": "jquery",
+            //引入 lodash/debounce
+            debounce: "lodash/debounce",
+            // 引入 echarts/dist/echarts
+            echarts: "echarts/dist/echarts"
+        })
+    ]
+```
+
 ### 5 webpack 导入样式
 #### 5.1 引入模块加载器
 在main.js中引入样式：`import './css/index.css'`。webpack 默认只能处理 js 类型的文件，处理 css 文件需要引入两个 loader，命令：`npm i style-loader css-loader –d`

@@ -11,22 +11,26 @@ tags:
 
 <!-- more -->
 
-## 第一个示例程序
-
-```
-print("Hello Python world!")
-```
-
-
-
 ## 安装 jupyter
 ```
 pip install jupyter
 ```
 安装完成后，切换到 .ipynb 文件目录下，在命令行中执行 `jupyter notebook` 然后会在浏览器中打开目录。或者指定打开某个文件 `jupyter notebook notebook.ipynb`
 
-## 变量名应使用小写
-（例子，略）
+## PEP 8 命名约定参考
+- 尽量单独使用小写字母 l，大写字母 O 等容易混淆的字母。
+- 模块命名尽量短小，使用全部小写的方式，可以使用下划线。
+- 包命名尽量短小，使用全部小写的方式，不可以使用下划线。
+- 类的命名使用 `CapWords` 的方式，模块内部使用的类采用 `_CapWords` 的方式。
+- 异常命名使用 CapWords+Error 后缀的方式。
+- 全局变量尽量只在模块内有效，类似 C 语言中的 static。实现方法有两种，一是 `__all__` 机制；其次是前缀加一个下划线。
+- 函数命名使用全部小写的方式，可以使用下划线。
+- 常量命名使用全部大写的方式，可以使用下划线。
+- 类的属性（方法和变量）命名使用全部小写的方式，可以使用下划线。
+- 类的属性有3种作用域 public、non-public 和 subclass API，可以理解成 C++ 中的 public、private、protected，non-public 属性前，前缀一条下划线。
+- 类的属性若与关键字名字冲突，后缀一下划线，尽量不要使用缩略等其他方式。
+- 为避免与子类属性命名冲突，在类的一些属性前，前缀两条下划线。比如：类 Foo 中声明 `__a`,访问时，只能通过 `Foo._Foo__a`，避免歧义。如果子类也叫 Foo，那就无能为力了。
+- 类的方法第一个参数必须是 self，而静态方法第一个参数必须是 cls。
 
 ## title()
 - 将字符串首字母转为大写后返回
@@ -165,7 +169,7 @@ cars = ['bmw', 'audi', 'toyota', 'subaru']
 cars.sort(reverse=True)
 ```
 
-- 使用 `sorted()` 对列表进行临时排序，保留列表元素原来的排列顺序，也可向 `sorted()` 传递参数 `reverse=True`。
+- 使用 `sorted()` 对列表进行临时排序，保留列表元素原来的排列顺序。`sorted()` 也可以传递参数 `reverse=True`。
 
 ```
 cars = ['bmw', 'audi', 'toyota', 'subaru']

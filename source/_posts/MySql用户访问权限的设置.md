@@ -11,35 +11,42 @@ tags:
 
 <!-- more -->
 
-⭐ 设置访问单个数据库权限
+⭐ 查看数据库中的所有用户
 ```
-mysql>grant all privileges on test.* to 'root'@'%';
+SELECT DISTINCT CONCAT('User: ''',user,'''@''',host,''';') AS query FROM mysql.user;
 ```
 
-设置用户名为 root，密码为空，可访问数据库 test
+⭐ 查看数据库中具体某个用户的权限:
+```
+show grants for 'root'@'localhost';
+```
 
-⭐ 设置访问全部数据库权限
+⭐ 取消来自远程服务器的 AA 用户所有数据库的所有的表的权限
 ```
-mysql>grant all privileges on *.* to 'root'@'%';
+revoke all privileges on *.* from AA@"%";
 ```
-设置用户名为 root，密码为空，可访问所有数据库*
+⭐ 取消来自远程服务器的 AA 用户对数据库 db 里的表 tb 的所有权限
+```
+revoke all on db.tb from AA@"%";
+```
+⭐ 取消来自远程服务器的 AA 用户对数据库 db 的所有表的所有权限
+```
+revoke all on db.* from AA@"%";
+```
 
+⭐ 为来自 11.1.1.1 的用户 AA 分配可对数据库 db 的表 tb 进行 select，insert，update，delete，create，drop 的权限，并设密码为 123456
+```
+grant select,insert,update,delete,create,drop on db1.tb1 to AA@11.1.1.1 identified by '123456';
+```
 
-⭐ 设置指定用户名访问权限
+⭐ 为来自 11.1.1.1 的 AA 用户分配可对数据库 db 所有表进行所有操作的权限，密码 123456
 ```
-mysql>grant all privileges on *.* to 'root'@'%';
+grant all privileges on db1.* to AA@11.1.1.1 identified by '123456';
 ```
-设置指定用户名为 root，密码为空，可访问所有数据库
 
-⭐ 设置密码访问权限
+⭐ 为来自 11.1.1.1 的 AA 用户分配可对所有数据库的所有表进行所有操作的权限，密码 123456
 ```
-mysql>grant all privileges on *.* to 'root'@'%' IDENTIFIED BY '123456';
+grant all privileges on *.* to AA@11.1.1.1 identified by '123456';
 ```
-设置指定用户名为 root，密码为 123456，可访问所有数据库*
 
-
-⭐ 设置指定可访问主机权限
-```
-mysql>grant all privileges on *.* to 'root'@'11.1.1.1';
-```
-设置指定用户名为 root，可访问所有数据库，只有 11.1.1.1 这台机器有权限访问
+注意：赋予权限的时候不指定来自哪个远程服务器，只需用 % 替代远程主机地址即可。
