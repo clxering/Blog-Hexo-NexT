@@ -73,13 +73,13 @@ webpack 依赖于 node.js，需要先进行 node.js 的安装，再运行 `npm i
 **附加内容：全局包升级到最新版本**
 - `npm install –g <name>`
 
-**附注：默认方式只能逐个升级。**
+注：默认方式只能逐个升级。
 
 **附加内容：安装指定版本的包**
 - 在包名后添加版本：`npm install jquery@3.0.0 --save-dev`
 
-**附加内容**
-`npm install` 命令可以自动安装当前目录下 `package.json` 中记录下来的包。因此，复制项目或上传项目时，可以排除 node_modules 目录。
+**附加内容：排除 node_modules 目录**
+`npm install` 命令可以自动安装当前目录下 `package.json` 中记录下来的包。因此，复制项目或上传项目时，可以排除 node_modules 目录。例如在 .ignore 中添加：`node_modules/`。
 
 ### 2 配置
 #### 2.1 webpack 4.x 的配置变化（与旧版本相比）
